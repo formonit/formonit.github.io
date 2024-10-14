@@ -24,11 +24,11 @@ function inbox(json){
     const dataArray = JSON.parse(json); // Read form data into entry object
     
     for (const data of dataArray) {
-    if (data.From === "EasyFormViewCounter") {
-        let viewCount = localStorage.getItem("EasyFormViewCounter");
+    if (data.From === "FormonitViewCounter") {
+        let viewCount = localStorage.getItem("FormonitViewCounter");
         ++viewCount;
-        document.getElementById("EasyFormViewCounter").innerText = `which has ${viewCount} views`;
-        localStorage.setItem("EasyFormViewCounter", viewCount);
+        document.getElementById("FormonitViewCounter").innerText = `which has ${viewCount} views`;
+        localStorage.setItem("FormonitViewCounter", viewCount);
         continue;
     }
     
@@ -102,7 +102,7 @@ const fetchChatID = async () => {
 async function config() {
     const uuid = document.getElementById("uuid").value;
     const response = await fetch(`https://securelay.vercel.app/keys/${uuid}`);
-    if (!response.ok) {alert('Invalid EasyForm Access Key!'); return;}
+    if (!response.ok) {alert('Invalid Formonit Access Key!'); return;}
     const respJson = await response.json();
     const pubKey = respJson.public; console.log('Public key = ' + pubKey);
     const getFrom = 'https://securelay.vercel.app/private/' + uuid;

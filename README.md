@@ -1,13 +1,13 @@
-# EasyForm
+# Formonit
 
-EasyForm gives you a free and easy, self-hosted form backend solution for adding (contact) forms to your static
+Formonit gives you a free and easy, self-hosted form backend solution for adding (contact) forms to your static
 website(s). You don't, however, need to configure any server or install anything. Your browser becomes your server!
 
 Your smartphone or PC is perhaps always connected to the internet, even on the move. So, if you keep your browser open
-there, and a very light-weight JavaScript server runs in it, you are essentially "self-hosting" for free. EasyForm
-capitalizes on this. Also, the ability to run in a browser makes EasyForm platform-independent!
+there, and a very light-weight JavaScript server runs in it, you are essentially "self-hosting" for free. Formonit
+capitalizes on this. Also, the ability to run in a browser makes Formonit platform-independent!
 
-Working with EasyForm is dead simple. All you need to do is the following:
+Working with Formonit is dead simple. All you need to do is the following:
 
 - Create a Telegram Bot and store its API token. This is easy. Just open a chat with [@BotFather](https://t.me/botfather)
 in Telegram and send: `/newbot`

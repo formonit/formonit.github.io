@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>EasyForm</title>
+        <title>Formonit</title>
         <meta name="description" content="Free, self-hosted, open-source form backend solution. No installation required for hosting. Lightweight server runs in browser. Backend sends form data as a Telegram bot to your Telegram account.">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +17,7 @@
     <body>
                                     <h1>Hello there! Feel free to post your message/comment/query to me</h1>
                                     <form method="POST" target="hidden_iframe">
-                                        <input type="hidden" name="From" value="EasyFormURL">
+                                        <input type="hidden" name="From" value="FormonitURL">
                                         <div class="row mt-2">
                                             <div class="col">
                                                 <input type="email" class="form-control" name="Email" placeholder="Your Email" autocomplete="on" required>
@@ -43,7 +43,7 @@
             fetch(postTo, {
                 method: "POST",
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}, 
-                body: "From=EasyFormViewCounter"
+                body: "From=FormonitViewCounter"
             })
         }
         

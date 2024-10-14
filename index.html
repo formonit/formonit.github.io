@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>EasyForm</title>
+        <title>Formonit</title>
         <meta name="description" content="Free, self-hosted, open-source form backend solution. No installation required for hosting. Lightweight server runs in browser. Backend sends form data as a Telegram bot to your Telegram account.">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +16,7 @@
     </head>
     <body onload="spaHide('jsAlert'); spaRestore();">
         <div class="container-fluid p-5 text-bg-primary text-center">
-            <h1>Welcome to EasyForm</h1>
+            <h1>Welcome to Formonit</h1>
         </div>
         <div class="container-fluid">
             <div class="row">
@@ -25,9 +25,9 @@
                         <div class="d-flex flex-column justify-content-center align-items-center mt-2 mb-3 pb-3">
                             <button type="button" class="btn btn-primary mt-4" onclick="spaGoTo('inbox'); updateUnreadCount();">Inbox <span id ="unread" class="badge bg-danger">0</span></button>
                             <button type="button" class="btn btn-primary mt-4" onclick="spaGoTo('server');">Server</button>
-                            <a href="https://github.com/somajitdey/easyform" class="btn btn-primary mt-4">Source</a>
+                            <a href="https://github.com/formonit/formonit.github.io" class="btn btn-primary mt-4">Source</a>
                             <a href="https://buymeacoffee.com/SomajitDey" class="btn btn-primary mt-4">Donate</a>
-                            <a href="https://github.com/SomajitDey/EasyForm/discussions/1" class="btn btn-primary mt-4">Contact</a>
+                            <a href="https://github.com/formonit/formonit.github.io/discussions" class="btn btn-primary mt-4">Contact</a>
                         </div>
                         <p>Copyright &copy; 2024 Somajit Dey</p>
                     </div>
@@ -40,7 +40,7 @@
                         <div class="spa-page" id="about">
                             <section>
                                 <h3>About</h3>
-                                <p>EasyForm gives you a free and easy, self-hosted form backend solution that runs in your browser! Just sign up and then embed the following HTML
+                                <p>Formonit gives you a free and easy, self-hosted form backend solution that runs in your browser! Just sign up and then embed the following HTML
                                    form in your website. You also get your own contact form URL that you can use if you don't have a website.
                                 </p>
                                 <pre><code class="language-html">
@@ -82,7 +82,7 @@
                                 <form id="config" onsubmit="config();alert('By signing in you agree to the Terms');return false;" target="hidden_iframe">
                                     <p>Setup in just 3 easy steps.</p>
 
-                                    <p>1. Generate or enter your EasyForm Access Key:</p>
+                                    <p>1. Generate or enter your Formonit Access Key:</p>
                                     <button type="button" onclick="genUUID(); alert('Store this key safely for all future logins. It cannot be recovered if lost.');">Generate New Key</button>
                                     <input type="text" id="uuid" placeholder="Enter Your Key" required>
                                     <br><br>
@@ -107,7 +107,7 @@
                                     <p>Test if everything is working properly with the following sample form (embed in your own website with 
                                     <button type="button" onclick="spaGoTo('about');">this code</button>). You should get a Telegram message upon clicking Post! Your posted data 
                                     should also be logged below.</p>
-                                    <p>You also get <a id="readyForm" target="_blank">your own contact form URL</a><span id="EasyFormViewCounter" class="badge bg-danger"></span>.</p>
+                                    <p>You also get <a id="readyForm" target="_blank">your own contact form URL</a><span id="FormonitViewCounter" class="badge bg-danger"></span>.</p>
                                     <form method="POST" target="hidden_iframe">
                                         <input type="hidden" name="From" value="tester">
                                         <div class="row mt-2">
