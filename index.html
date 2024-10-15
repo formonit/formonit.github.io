@@ -25,6 +25,7 @@
                                     <li class="nav-item"><a class="nav-link" href="https://buymeacoffee.com/SomajitDey">Donate</a></li>
                                     <li class="nav-item"><a class="nav-link" href="https://github.com/formonit/formonit.github.io/discussions">Contact</a></li>
                                     <li class="nav-item"><a class="nav-link" href="ToS.txt">Terms</a></li>
+									<li class="nav-item"><a class="nav-link" href="#privacy" onClick="spaGoTo('privacy');">Privacy</a></li>
                                 </ul>
 </nav>
         <div class="container-fluid">
@@ -32,9 +33,9 @@
                 <nav class="col-sm-1 bg-secondary">
                     <div class="sticky-top">
                         <div class="d-flex flex-column min-vh-100 justify-content-start align-items-center py-3">
-                            <button type="button" class="btn btn-primary my-3" onclick="spaGoTo('inbox'); updateUnreadCount();">Inbox<br><span id ="unread" class="badge bg-danger">0</span></button>
-                            <button type="button" class="btn btn-primary my-3" onclick="spaGoTo('forms');">Forms</button>
-                            <button type="button" class="btn btn-primary my-3" onclick="spaGoTo('chats');">Chats</button>
+                            <a class="btn btn-primary my-3" href="#inbox" onclick="spaGoTo('inbox'); updateUnreadCount();">Inbox<br><span id ="unread" class="badge bg-danger">0</span></a>
+                            <a class="btn btn-primary my-3" href="#forms" onclick="spaGoTo('forms');">Forms</a>
+                            <a class="btn btn-primary my-3" href="#chats" onclick="spaGoTo('chats');">Chats</a>
                             <a class="btn btn-primary my-3" href="#admin" onclick="spaGoTo('admin');">Admin</a>
                         </div>
                     </div>
@@ -149,12 +150,19 @@
                                 <h3>Admin</h3>
                                 <details class="my-4" open>
 								<summary><strong>Settings</strong></summary>
+                                <button type="button" onclick="signout();">Sign out</button>
+								<input type="button" id="toggleServer" value="Kill Server" disabled=true; onclick="toggleWorker();">
 								</details>
 								
 								<details class="my-4" open>
 								<summary><strong>Test</strong></summary>
-                                    <p>Test if everything is working properly with the following sample form. The HTML underlying this form is based on the embeddable snippet shown in <a href="#forms" onClick="spaGoTo('forms');">Forms</a>. You should get a Telegram message upon clicking Post! Your posted data 
-                                    should also be logged below.</p>
+                                    <p>Test if everything is working properly with the following sample form. The HTML underlying this form is based on the embeddable snippet shown in <a href="#forms" onClick="spaGoTo('forms');">Forms</a>.</p>
+									<p>3 things should happen when you submit the form.</p>
+									<ol type="1">
+									<li>The below Log will report an entry.</li>
+									<li><a href="#inbox" onClick="spaGoTo('inbox');">Inbox</a> will be populated.</li>
+									<li>You will get the form data as a Telegram message.</li>
+									</ol>
                                     <form method="POST" target="hidden_iframe">
                                         <input type="hidden" name="From" value="tester">
                                         <div class="row mt-2">
@@ -174,11 +182,9 @@
                                 
                                 <details class="my-4" open>
 								<summary><strong>Log</strong></summary>
-                                <input type="button" id="toggleServer" value="Kill Server" disabled=true; onclick="toggleWorker();">
-                                <button type="button" onclick="signout();">Sign out</button>
                                 <button type="button" onclick="spaBottom();">Bottom</button>
                                 <br><br>
-                                <p class="alert alert-success">Only high level logs are shown here. For the more technical low level logs, check console. Reload this Tab to clear the logs.</p>
+                                <p class="alert alert-success">Only high level logs are shown here. For the more technical low level logs, check console. Reload this window to clear the logs.</p>
                                 <div id="logs" class="text-bg-info"></div>
                                 <br><br>
                                 <button type="button" onclick="spaTop();">Top</button>
