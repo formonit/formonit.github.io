@@ -155,7 +155,7 @@ function startWorker() {
     
     const formActionURL = localStorage.getItem("formActionURL");
     console.log('Public key = ' + formActionURL);
-    document.getElementById("formActionURL").innerHTML = `<p class="alert alert-success">HTML Form Action URL: <u>${formActionURL}</u></p>`;
+    document.getElementById("formActionURL").innerText = formActionURL;
     document.getElementById("readyForm").href = `./${btoa(formActionURL).replace(/\+/g,'_').replace(/\//g,'-').replace(/=+$/,'')}`;
     document.getElementById("testFormBtn").setAttribute("formaction", formActionURL);
     spaShow("testForm");

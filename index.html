@@ -20,7 +20,7 @@
         </header>
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-center">
                                 <ul class="navbar-nav">
-                                    <li class="nav-item"><a class="nav-link" onClick="spaGoTo('about');">About</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#about" onClick="spaGoTo('about');">About</a></li>
                                     <li class="nav-item"><a class="nav-link" href="https://github.com/formonit/formonit.github.io">Source</a></li>
                                     <li class="nav-item"><a class="nav-link" href="https://buymeacoffee.com/SomajitDey">Donate</a></li>
                                     <li class="nav-item"><a class="nav-link" href="https://github.com/formonit/formonit.github.io/discussions">Contact</a></li>
@@ -32,9 +32,10 @@
                 <nav class="col-sm-1 bg-secondary">
                     <div class="sticky-top">
                         <div class="d-flex flex-column min-vh-100 justify-content-start align-items-center py-3">
-                            <button type="button" class="btn btn-primary my-3" onclick="spaGoTo('inbox'); updateUnreadCount();">Inbox <span id ="unread" class="badge bg-danger">0</span></button>
+                            <button type="button" class="btn btn-primary my-3" onclick="spaGoTo('inbox'); updateUnreadCount();">Inbox<br><span id ="unread" class="badge bg-danger">0</span></button>
                             <button type="button" class="btn btn-primary my-3" onclick="spaGoTo('forms');">Forms</button>
-                            <a class="btn btn-primary my-3" onclick="spaGoTo('chats');">Chats</a>
+                            <button type="button" class="btn btn-primary my-3" onclick="spaGoTo('chats');">Chats</button>
+                            <a class="btn btn-primary my-3" href="#admin" onclick="spaGoTo('admin');">Admin</a>
                         </div>
                     </div>
                 </nav>
@@ -49,19 +50,6 @@
                                 <p>Formonit gives you a free and easy, self-hosted form backend solution that runs in your browser! Just sign up and then embed the following HTML
                                    form in your website. You also get your own contact form URL that you can use if you don't have a website.
                                 </p>
-                                <pre><code class="language-html">
-&lt;!-- Replace XXXXX with the form action URL given by this app upon sign up` --&gt;
-&lt;form action=&quot;XXXXX&quot; method=&quot;POST&quot; target=&quot;hidden_iframe&quot;&gt;
-    &lt;input type=&quot;hidden&quot; name=&quot;From&quot; value=&quot;sample&quot;&gt;
-    &lt;input type=&quot;email&quot; name=&quot;Email&quot; placeholder=&quot;Your Email&quot;&gt;
-    &lt;input type=&quot;text&quot; name=&quot;Name&quot; placeholder=&quot;Your Name&quot;&gt;
-    &lt;input type=&quot;text&quot; name=&quot;Message&quot; placeholder=&quot;Your Message&quot;&gt;
-    &lt;button type=&quot;submit&quot;&gt;Submit&lt;button&gt;
-    &lt;input type=&quot;reset&quot;&gt;Reset&lt;button&gt;
-&lt;/form&gt;
-&lt;!-- when the form is submitted, the server response will appear in this iframe, hidden from view --&gt;
-&lt;iframe name=&quot;hidden_iframe&quot; src=&quot;about:blank&quot; hidden&gt;&lt;/iframe&gt;
-</code></pre>
                                 <p>As long as this Tab is open in your browser, whenever your users submit the form, your Inbox here will be populated.
                                     You will also be notified via Telegram.
                                 </p>
@@ -80,9 +68,60 @@
                                 </ul>
                             </section>
                         </div>
-                        <p class="d-flex justify-content-start"><button type="button" class="btn btn-danger mt-4" onclick="main();" id="login">Let's get started</button></p>
 
-                        <div class="spa-page" id="setup">
+                        <div class="spa-page" id="forms">
+						<h3>Forms</h3>
+						<details class="my-4" open>
+						<summary><strong>Embeddable snippet</strong></summary>
+						<p>Edit the below snippet as follows and embed in your website.</p>
+						<ol class="list-group list-group-numbered">
+							<li class="list-group-item list-group-item-success">Replace <code>XXXXX</code> with <mark id="formActionURL">the form action URL generated upon sign-up</mark></li>
+							<li class="list-group-item list-group-item-info">Replace <code>YYYYY</code> with a unique descriptive string</li>
+						</ol>
+								<pre><code class="language-html">
+&lt;form action=&quot;XXXXX&quot; method=&quot;POST&quot; target=&quot;hidden_iframe&quot;&gt;
+    &lt;input type=&quot;hidden&quot; name=&quot;FormID&quot; value=&quot;YYYYY&quot;&gt;
+    &lt;input type=&quot;email&quot; name=&quot;Email&quot; placeholder=&quot;Your Email&quot;&gt;
+    &lt;input type=&quot;text&quot; name=&quot;Name&quot; placeholder=&quot;Your Name&quot;&gt;
+    &lt;input type=&quot;text&quot; name=&quot;Message&quot; placeholder=&quot;Your Message&quot;&gt;
+    &lt;button type=&quot;submit&quot;&gt;Submit&lt;button&gt;
+    &lt;input type=&quot;reset&quot;&gt;Reset&lt;button&gt;
+&lt;/form&gt;
+&lt;!-- when the form is submitted, the server response will appear in the following iframe, hidden from view --&gt;
+&lt;iframe name=&quot;hidden_iframe&quot; src=&quot;about:blank&quot; hidden&gt;&lt;/iframe&gt;
+</code></pre>
+						</details>
+
+
+                        <details class="my-4" open>
+						<summary><strong>Shareable links</strong></summary>
+						<p>Following lists your custom webpages made with love and hosted by Formonit. Numbers on the right represent page views since your last sign-in.</p>
+						<ol class="list-group list-group-numbered">
+							<li class="list-group-item d-flex justify-content-between align-items-start">
+								<div class="ms-2 me-auto">
+									<div class="fw-bold">Profile</div>
+									<a href="#">https://formonit.github.io/user/</a>
+								</div>
+								<span class="badge bg-primary rounded-pill">14</span>
+							</li>
+							<li class="list-group-item d-flex justify-content-between align-items-start">
+								<div class="ms-2 me-auto">
+									<div class="fw-bold">Anonymous</div>
+									<a href="#">https://formonit.github.io/anon/</a>
+								</div>
+								<span class="badge bg-primary rounded-pill">14</span>
+							</li>
+							<li class="list-group-item d-flex justify-content-between align-items-start">
+								<div class="ms-2 me-auto">
+									<div class="fw-bold">Vehicle sticker</div>
+									<a href="#">https://formonit.github.io/car/</a>
+								</div>
+								<span class="badge bg-primary rounded-pill">14</span>
+							</li>
+						</ol>
+						</details>
+						</div>
+						<div class="spa-page" id="setup">
                             <section>
                                 <h3>Setup</h3>
                                 <form id="config" onsubmit="config();alert('By signing in you agree to the Terms');return false;" target="hidden_iframe">
@@ -105,15 +144,17 @@
                                 </form>
                             </section>
                         </div>
-                        <div class="spa-page" id="server">
+                        <div class="spa-page" id="admin">
                             <section>
-                                <h3>Server</h3>
-                                <div id="formActionURL"></div>
-                                <div id="testForm">
-                                    <p>Test if everything is working properly with the following sample form (embed in your own website with 
-                                    <button type="button" onclick="spaGoTo('about');">this code</button>). You should get a Telegram message upon clicking Post! Your posted data 
+                                <h3>Admin</h3>
+                                <details class="my-4" open>
+								<summary><strong>Settings</strong></summary>
+								</details>
+								
+								<details class="my-4" open>
+								<summary><strong>Test</strong></summary>
+                                    <p>Test if everything is working properly with the following sample form. The HTML underlying this form is based on the embeddable snippet shown in <a href="#forms" onClick="spaGoTo('forms');">Forms</a>. You should get a Telegram message upon clicking Post! Your posted data 
                                     should also be logged below.</p>
-                                    <p>You also get <a id="readyForm" target="_blank">your own contact form URL</a><span id="FormonitViewCounter" class="badge bg-danger"></span>.</p>
                                     <form method="POST" target="hidden_iframe">
                                         <input type="hidden" name="From" value="tester">
                                         <div class="row mt-2">
@@ -125,13 +166,14 @@
                                             </div>
                                             <input type="text" class="form-control mt-2" name="Message" placeholder="Your Message" required>
                                         </div>
-                                        <button type="submit" id="testFormBtn" class="btn btn-info mt-2" onclick="alert('Thanks for your message!');">Post</button>
+                                        <button type="submit" id="testFormBtn" class="btn btn-info mt-2" onclick="alert('Thanks for your message!');" disabled>Post</button>
                                         <button type="reset" class="btn btn-warning mt-2">Reset</button>
                                     </form>
                                     <iframe name="hidden_iframe" src="about:blank" hidden></iframe>
-                                </div>
-                                <br><br>
-                                <h3>Log</h3>
+                                </details>
+                                
+                                <details class="my-4" open>
+								<summary><strong>Log</strong></summary>
                                 <input type="button" id="toggleServer" value="Kill Server" disabled=true; onclick="toggleWorker();">
                                 <button type="button" onclick="signout();">Sign out</button>
                                 <button type="button" onclick="spaBottom();">Bottom</button>
@@ -140,13 +182,16 @@
                                 <div id="logs" class="text-bg-info"></div>
                                 <br><br>
                                 <button type="button" onclick="spaTop();">Top</button>
+								</details>
                             </section>
                         </div>
                         <div class="spa-page" id="inbox">
                         <section>
                             <h3>Inbox</h3>
-                            <p class="alert alert-success">This is your storageless Inbox. All data is lost once you close or even reload this Tab.</p>
-                            <div class="table-responsive">
+                            <div class="alert alert-success">
+							<div class="d-inline-flex w-100 justify-content-between"><p>This is your storageless Inbox. All data is lost once you close or even reload this window.</p><button>Sync Now</button></div>
+                            </div>
+							<div class="table-responsive">
                             <table class="table table-hover table-striped">
                                 <thead class="table-dark">
                                     <tr id="inboxHeader">
@@ -163,6 +208,8 @@
                             </div>
                         </section>
                         </div>
+
+                        <p class="d-flex justify-content-start"><button type="button" class="btn btn-danger mt-4" onclick="main();" id="login">Let's get started</button></p>
 
                         <div class="badge bg-warning position-fixed bottom-0 end-0">
                             AutoSync: <span id="serverStatus">Off</span>
