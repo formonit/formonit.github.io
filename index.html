@@ -173,7 +173,7 @@
 									<li><a href="#inbox" onClick="spaGoTo('inbox');">Inbox</a> will be populated.</li>
 									<li>You will get the form data as a Telegram message.</li>
 									</ol>
-                                    <form method="POST" target="testForm_iframe" onsubmit="document.getElementsByName('testForm_iframe')[0].src='data:,Loading...';">
+                                    <form method="POST" target="testForm_iframe" onsubmit="document.getElementsByName('testForm_iframe')[0].style='background:url(https://img.icons8.com/material-outlined/24/spinner-frame-2.png) center center no-repeat';">
                                         <input type="hidden" name="From" value="tester">
                                         <div class="row mt-2">
                                             <div class="col">
@@ -185,10 +185,10 @@
                                             <div class="mt-2"><input type="text" class="form-control" name="Message" placeholder="Your Message" required></div>
                                         </div>
                                         <button type="submit" id="testFormBtn" class="btn btn-info mt-2" disabled>Submit</button>
-                                        <button type="reset" class="btn btn-warning mt-2" onClick="document.getElementsByName('testForm_iframe')[0].removeAttribute('src');">Reset</button>
+                                        <button type="reset" class="btn btn-warning mt-2" onClick="document.getElementsByName('testForm_iframe')[0].src='about:blank';">Reset</button>
                                     </form>
                                         <span>Submission status:</span>
-                                        <iframe name="testForm_iframe" height="30" scrolling="no" src='about:blank'></iframe>
+                                        <iframe name="testForm_iframe" height="30" scrolling="no" src='about:blank' onload="this.removeAttribute('style')"></iframe>
                                 </details>
                                 
                                 <details class="my-4" open>
