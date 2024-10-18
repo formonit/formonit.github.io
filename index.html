@@ -38,6 +38,7 @@
                             <a class="btn btn-info my-3" href="#chats" onclick="spaGoTo('chats');">Chats</a>
                             <a class="btn btn-info my-3" href="#settings" onclick="spaGoTo('settings');"><img width="25" height="25" src="https://img.icons8.com/3d-fluency/50/gear--v1.png" alt="gear--v1"/></a>
                             <a class="btn btn-info my-3" href="#admin" onclick="spaGoTo('admin');"><img width="25" height="25" src="https://img.icons8.com/3d-fluency/50/test-passed.png" alt="test-passed"/></a>
+                            <button type="button" class="btn btn-info my-3" href="#admin" onclick="toggleDarkMode();"><img width="25" height="25" src="https://img.icons8.com/fluency/48/day-and-night.png" alt="day-and-night"/></button>
                         </div>
                     </div>
                 </nav>
@@ -181,7 +182,7 @@
                                             <div class="col">
                                                 <input type="text" class="form-control" name="Name" placeholder="Your Name" autocomplete="on" required>
                                             </div>
-                                            <input type="text" class="form-control mt-2" name="Message" placeholder="Your Message" required>
+                                            <div class="mt-2"><input type="text" class="form-control" name="Message" placeholder="Your Message" required></div>
                                         </div>
                                         <button type="submit" id="testFormBtn" class="btn btn-info mt-2" onclick="alert('Thanks for your message!');" disabled>Post</button>
                                         <button type="reset" class="btn btn-warning mt-2">Reset</button>

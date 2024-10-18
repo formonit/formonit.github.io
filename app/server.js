@@ -6,7 +6,21 @@ let numTotalMsgs = 0;
 const logs = document.getElementById("logs");
 const toggleServer = document.getElementById("toggleServer");
 
-function logThis(report) {
+function toggleDarkMode(){
+    const rootElement = document.documentElement;
+    const mainElement = document.querySelector("main > div");
+    if (rootElement.getAttribute('data-bs-theme') == 'dark') {
+        rootElement.setAttribute('data-bs-theme', 'light');
+        mainElement.classList.remove("text-bg-dark");
+        mainElement.classList.add("text-bg-light");
+    } else {
+        rootElement.setAttribute('data-bs-theme', 'dark');
+        mainElement.classList.remove("text-bg-light");
+        mainElement.classList.add("text-bg-dark");
+    }
+}
+
+function logThis(report){
     const row = document.createElement("p");
     row.append(`${Date()}: ${report}`);
     logs.prepend(row);
