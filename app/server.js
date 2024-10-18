@@ -126,7 +126,7 @@ async function config() {
     const postTo = 'https://api.telegram.org/bot' + document.getElementById("TGbotKey").value + '/sendMessage';
     localStorage.setItem("postTo", postTo);
     spaHide("login");
-    spaGoTo("server");
+    spaGoTo("admin");
     localStorage.setItem("loggedIn", "true");
     startWorker();
 }
@@ -168,11 +168,11 @@ function startWorker() {
     document.getElementById("serverStatus").innerHTML = 'Live  <span class="spinner-grow spinner-grow-sm"></span>';
     
     const formActionURL = localStorage.getItem("formActionURL");
-    console.log('Public key = ' + formActionURL);
+    logThis('Public key = ' + formActionURL);
     document.getElementById("formActionURL").innerText = formActionURL;
-    document.getElementById("readyForm").href = `./${btoa(formActionURL).replace(/\+/g,'_').replace(/\//g,'-').replace(/=+$/,'')}`;
+    //document.getElementById("readyForm").href = `./${btoa(formActionURL).replace(/\+/g,'_').replace(/\//g,'-').replace(/=+$/,'')}`;
     document.getElementById("testFormBtn").setAttribute("formaction", formActionURL);
-    spaShow("testForm");
+    document.getElementById("testFormBtn").disabled = false;
 }
 
 function stopWorker() {
@@ -207,9 +207,9 @@ function main() {
     if (localStorage.getItem("loggedIn")) {
         spaHide("login");
         startWorker();
-        spaGoTo("server");
+        spaGoTo("admin");
     } else {
-        spaGoTo("setup");
+        spaGoTo("settings");
     }
 
 }
