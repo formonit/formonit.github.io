@@ -121,7 +121,8 @@ async function config() {
     const pubKey = respJson.public; console.log('Public key = ' + pubKey);
     const getFrom = 'https://securelay.vercel.app/private/' + uuid;
     localStorage.setItem("getFrom", getFrom);
-    const formActionURL = 'https://securelay.vercel.app/public/' + pubKey;
+    const formActionURL = 'https://securelay.vercel.app/public/' + pubKey + 
+        '?ok=https%3A%2F%2Fimg.icons8.com%2Fcolor%2F30%2Fapproval--v1.png&err=https%3A%2F%2Fimg.icons8.com%2Femoji%2F30%2Fcross-mark-emoji.png';
     localStorage.setItem("formActionURL", formActionURL);
     const postTo = 'https://api.telegram.org/bot' + document.getElementById("TGbotKey").value + '/sendMessage';
     localStorage.setItem("postTo", postTo);
