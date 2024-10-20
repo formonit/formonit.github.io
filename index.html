@@ -135,23 +135,18 @@
 						<div class="spa-page" id="settings">
                             <section>
                                 <h3>Settings</h3>
-                                <form id="config" onsubmit="config();alert('By signing in you agree to the Terms');return false;" target="hidden_iframe">
-                                    <p>Setup in just 3 easy steps.</p>
+                                <form id="config" onsubmit="config();return false;" target="hidden_iframe">
+                                    <p>Setup in just 2 easy steps.</p>
 
-                                    <p>1. Generate or enter your Formonit Access Key:</p>
-                                    <button type="button" onclick="genUUID(); alert('Store this key safely for all future logins. It cannot be recovered if lost.');">Generate New Key</button>
-                                    <input type="text" id="uuid" placeholder="Enter Your Key" required>
-                                    <br><br>
-
-                                    <label for="TGbotKey" class="form-label">2. Enter your Telegram Bot API Token (available from <a href="https://t.me/botfather">@BotFather</a>):</label>
+                                    <label for="TGbotKey" class="form-label">1. Enter your Telegram Bot API Token (available from <a href="https://t.me/botfather">@BotFather</a>):</label>
                                     <input type="text" id="TGbotKey" class="form-control" autocomplete="on" required>
                                     <br>
 
-                                    <p>3. Send any text to the Bot. Then, click Fetch Chat ID.</p>
+                                    <p>2. Send any text to the Bot. Then, click Fetch Chat ID.</p>
                                     <button type="button" onclick="fetchChatID();">Fetch Chat ID</button>
                                     <input type="text" id="chatID" placeholder="Chat ID" disabled required>
                                     <br><br>
-                                    <button type="submit" class="btn btn-success">Sign in</button>
+                                    <button type="submit" class="btn btn-success">Save</button>
                                 </form>
                             </section>
                         </div>
@@ -240,6 +235,26 @@
                         Copyright &copy; 2024 Formonit
 
         </footer>
+        <dialog id="signIn">
+            <div class="d-flex mb-2">
+                <h5>Sign in</h5>
+                <button type="button" class="btn-close ms-auto" onClick="document.getElementById('signIn').close();"></button>
+            </div>
+            <form method="dialog">
+            <p>Generate or enter your Formonit Access Key</p>
+            <button type="button" class="btn btn-success me-2" onclick="genUUID();">Generate New Key</button>
+            <input type="text" id="uuid" placeholder="Enter Your Key" required>
+            <div id="keyAlert" class="alert alert-warning my-4">Store this key safely for all future logins. It cannot be recovered, if lost.</div>
+            <input type="checkbox" id="keepSignedIn" name="keepSignedIn" checked>
+            <label for="keepSignedIn" data-bs-toggle="tooltip" title="Uses localStorage for storing session">Keep me signed in</label>
+            <br>
+            <input type="checkbox" id="termsUnderstood" name="termsUnderstood" required>
+            <label for="termsUnderstood">I have read and understood the <a href="ToS.txt">Terms</a></label>
+            <br>
+            <button type="submit" class="btn btn-primary mt-2">Sign in</button>
+            <button type="reset" class="btn btn-secondary mt-2">Reset</button>           
+            </form>
+        </dialog>
         <script defer src="https://cdn.jsdelivr.net/gh/SomajitDey/webtools@0.0.0/spa/spa.min.js"></script>
         <script defer src="https://cdn.jsdelivr.net/gh/SomajitDey/webtools@0.0.0/prism/prism.min.js"></script>
 		<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>

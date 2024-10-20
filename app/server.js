@@ -210,6 +210,7 @@ function main() {
         startWorker();
         spaGoTo("admin");
     } else {
+        document.getElementById("signIn").showModal();
         spaGoTo("settings");
     }
 
