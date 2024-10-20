@@ -207,7 +207,9 @@
                             <div class="alert alert-success">
 							<div class="d-inline-flex w-100 justify-content-between"><p>This is your storageless Inbox. All data is lost once you close or even reload this window.</p><button>Sync Now</button></div>
                             </div>
-							<div class="table-responsive">
+							<p class="alert alert-info"><strong>Protip:</strong> To export to <a href="https://www.microsoft.com/en/microsoft-365/excel">MS Excel</a>, copy the table below, followed by <code>Paste Special > Text</code> in Excel. To export to <a href="https://docs.google.com/spreadsheets/create">Google Sheets</a>, use <code>Paste Special > Values only (Ctrl+Shift+V)</code> instead.</p>
+                            <button class="clipboard-js-btn" data-clipboard-target="#inboxTable">Copy table</button>
+                            <div class="table-responsive">
                             <table class="table table-hover table-striped">
                                 <thead class="table-dark">
                                     <tr id="inboxHeader">
