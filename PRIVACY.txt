@@ -1,0 +1,6 @@
+Privacy policy
+==============
+Session data is stored in localStorage, if "Keep me signed in" is opted for.
+Public data, such as bio, avatar and socials are hosted, unencrypted, on a server.
+No cookies are used.
+User data is not shared with 3rd parties for commercial purposes.
