@@ -1,4 +1,8 @@
-// Main entry point for the server. Deploys background worker in "bg-worker.js" for handling networking.
+/*
+Brief: Main entry point for the app.
+*/
+
+import * as utils from './utils.js';
 
 let myWorker = null;
 let numReadMsgs = 0;
@@ -6,7 +10,7 @@ let numTotalMsgs = 0;
 const logs = document.getElementById("logs");
 const toggleServer = document.getElementById("toggleServer");
 
-function toggleDarkMode(){
+window.toggleDarkMode = function toggleDarkMode(){
     const rootElement = document.documentElement;
     const mainElement = document.querySelector("main > div");
     if (rootElement.getAttribute('data-bs-theme') == 'dark') {
@@ -27,7 +31,7 @@ function logThis(report){
 }
 
 // Handler for updating the display of number of unread messages
-function updateUnreadCount(){
+window.updateUnreadCount = function updateUnreadCount(){
     if (spaCurrentPageID === "inbox") {
         numReadMsgs = numTotalMsgs;
     }
@@ -59,7 +63,7 @@ function inbox(json){
         const cell = document.createElement("td");
 
         // Create a text entry:
-        entry = data[key];
+        const entry = data[key];
 
         // Append entry to cell:
         cell.append(entry);
@@ -85,7 +89,7 @@ function inbox(json){
 }
 }
 
-async function genUUID() {
+window.genUUID = async function genUUID() {
     // v4 UUID looks like xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx in hexadecimal. See Wikipedia.
     // M stores version & N, the variant. All the x digits above are cryptographically random.
     // For our uuid we simply choose the first block of hex chars from a v4 UUID.
@@ -94,7 +98,7 @@ async function genUUID() {
     document.getElementById("uuid").value = keypair.private;
 }
 
-const fetchChatID = async () => {
+window.fetchChatID = async function fetchChatID() {
     logThis("Fetching Telegram chat ID");
     const apiEndpoint = 'https://api.telegram.org/bot' + document.getElementById("TGbotKey").value + '/getUpdates';
     const response = await fetch(apiEndpoint); // Make request
@@ -113,7 +117,7 @@ const fetchChatID = async () => {
     }
 }
 
-async function config() {
+window.config = async function config() {
     const uuid = document.getElementById("uuid").value;
     const response = await fetch(`https://securelay.vercel.app/keys/${uuid}`);
     if (!response.ok) {alert('Invalid Formonit Access Key!'); return;}
@@ -132,14 +136,14 @@ async function config() {
     startWorker();
 }
 
-function startWorker() {
+window.startWorker = function startWorker() {
     if (myWorker) {
         return;
     } else {
         sessionStorage.setItem("server", "live");
     }
     
-    myWorker = new Worker("app/bg-worker.js");
+    myWorker = new Worker("app/worker.js");
 
     // Register handler for messages from the background worker
     myWorker.onmessage = (e) => {
@@ -176,7 +180,7 @@ function startWorker() {
     document.getElementById("testFormBtn").disabled = false;
 }
 
-function stopWorker() {
+window.stopWorker = function stopWorker() {
     if (! myWorker) {
         return;
     }
@@ -189,7 +193,7 @@ function stopWorker() {
     document.getElementById("serverStatus").innerText = "Killed";
 }
 
-function toggleWorker() {
+window.toggleWorker = function toggleWorker() {
     if (myWorker != null) {
         stopWorker();
     } else {
@@ -197,13 +201,13 @@ function toggleWorker() {
     }
 }
 
-function signout() {
+window.signout = function signout() {
     stopWorker();
     localStorage.clear();
     location.reload();
 }
 
-function main() {
+window.main = function main() {
     // Enable config if no prior settings found in localStorage
     if (localStorage.getItem("loggedIn")) {
         spaHide("login");
