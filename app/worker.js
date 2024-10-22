@@ -2,8 +2,10 @@
 Brief: Background worker performing syncing/networking.
 */
 
-async function pollApi(getFrom, postTo, TGchatID) {
-    const pollInterval = 5000; // in milliseconds
+import { sendTG, syncSecurelay } from './utils.js';
+
+async function pollAPI(getFrom, postTo, TGchatID) {
+    const pollInterval = 900000; // in milliseconds
 
     const relay = async () => {
         let data; // This will hold the received URL encoded form data
@@ -60,8 +62,8 @@ async function pollApi(getFrom, postTo, TGchatID) {
     relay(); // Start the first relay
 }
 
-// Register pollApi has handler for the event of receiving any message from main
+// Register pollAPI as handler for the event of receiving any message from main
 onmessage = (e) => {
   console.log("Message received from main script: " + JSON.stringify(e.data));
-  pollApi(e.data[0], e.data[1], e.data[2]);
+  pollAPI(e.data[0], e.data[1], e.data[2]);
 };

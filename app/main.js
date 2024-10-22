@@ -143,7 +143,7 @@ window.startWorker = function startWorker() {
         sessionStorage.setItem("server", "live");
     }
     
-    myWorker = new Worker("app/worker.js");
+    myWorker = new Worker("app/worker.js", { type: "module" });
 
     // Register handler for messages from the background worker
     myWorker.onmessage = (e) => {
