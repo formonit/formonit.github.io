@@ -38,9 +38,7 @@ window.updateUnreadCount = function updateUnreadCount(){
     document.getElementById("unread").innerText = numTotalMsgs - numReadMsgs;
 }
 
-function inbox(json){
-    const dataArray = JSON.parse(json); // Read form data into entry object
-    
+function inbox(dataArray){
     for (const data of dataArray) {
     if (data.From === "FormonitViewCounter") {
         let viewCount = localStorage.getItem("FormonitViewCounter");
@@ -122,9 +120,12 @@ window.config = async function config() {
     const response = await fetch(`https://securelay.vercel.app/keys/${uuid}`);
     if (!response.ok) {alert('Invalid Formonit Access Key!'); return;}
     const respJson = await response.json();
-    const pubKey = respJson.public; console.log('Public key = ' + pubKey);
+    const pubKey = respJson.public;
+    console.log('Public key = ' + pubKey);
     const getFrom = 'https://securelay.vercel.app/private/' + uuid;
     localStorage.setItem("getFrom", getFrom);
+    localStorage.setItem("formonitKey", `${uuid}@alz2h`);
+    localStorage.setItem("TGbotKey", document.getElementById("TGbotKey").value);
     const formActionURL = 'https://securelay.vercel.app/public/' + pubKey + 
         '?ok=https%3A%2F%2Fimg.icons8.com%2Fcolor%2F30%2Fapproval--v1.png&err=https%3A%2F%2Fimg.icons8.com%2Femoji%2F30%2Fcross-mark-emoji.png';
     localStorage.setItem("formActionURL", formActionURL);
@@ -147,24 +148,28 @@ window.startWorker = function startWorker() {
 
     // Register handler for messages from the background worker
     myWorker.onmessage = (e) => {
-        const errLvl = e.data[1];
-        const msg = e.data[0];
+        const data = e.data;
+        const errLvl = data.errlvl;
+        const msg = data.msg;
         if (! errLvl) {
             inbox(msg);
-            logThis(`RECEIVED: ${msg}`);
-        } else if (errLvl === 1) {
+            logThis(`Received: ${JSON.stringify(msg)}`);
+        } else if (errLvl === 2) {
             stopWorker();
-            logThis(`FATAL ERROR: ${msg}. See console for details.`);
-            alert('Server stopped due to some critical error');
+            logThis(`${msg}. Error: ${data.err.message}`);
+            alert('App stopped due to some critical error. Check logs.');
         } else {
-            logThis(`ERROR: ${msg}. See console for details.`);
+            logThis(`${msg}. Error: ${data.err.message}`);
         }
     }
 
-    const getFrom = localStorage.getItem("getFrom");
-
     // Communicate key data to the background worker
-    myWorker.postMessage([getFrom, localStorage.getItem("postTo"), localStorage.getItem("TGchatID")]);
+    myWorker.postMessage({formonitKey: localStorage.getItem("formonitKey"), 
+                            TGbotKey: localStorage.getItem("TGbotKey"),
+                            TGchatID: localStorage.getItem("TGchatID")
+                        });
+    console.log(localStorage.getItem("formonitKey"));
+    console.log(localStorage.getItem("TGbotKey"));
 
     toggleServer.value = "Kill Server";
     toggleServer.disabled = false;
