@@ -156,7 +156,7 @@
                                 <details class="my-4" open>
 								<summary><strong>Server</strong></summary>
                                 <button type="button" onclick="signout();">Sign out</button>
-								<input type="button" id="toggleServer" value="Kill Server" disabled=true; onclick="toggleWorker();">
+								<input type="button" id="toggleServer" value="Kill Server" disabled; onclick="toggleWorker();">
 								</details>
 								
 								<details class="my-4" open>
@@ -181,7 +181,7 @@
                                         </div>
                                         <button type="submit" id="testFormBtn" class="btn btn-success mt-2" disabled>Submit</button>
                                         <button type="reset" class="btn btn-warning mt-2" onClick="document.getElementsByName('testForm_iframe')[0].src='about:blank';">Reset</button>
-                                        <iframe name="testForm_iframe" height="30" width="30" scrolling="no" src='about:blank' onload="this.removeAttribute('style')"></iframe>
+                                        <iframe name="testForm_iframe" height="30" width="30" scrolling="no" src="about:blank" onload="this.removeAttribute('style')"></iframe>
                                     </form>
                                 </details>
                                 
@@ -202,7 +202,7 @@
                             <div class="alert alert-success">
 							<div class="d-inline-flex w-100 justify-content-between"><p>This is your storageless Inbox. All data is lost once you close or even reload this window.</p><button>Sync Now</button></div>
                             </div>
-							<p class="alert alert-info"><strong>Protip:</strong> To export to <a href="https://www.microsoft.com/en/microsoft-365/excel">MS Excel</a>, copy the table below, followed by <code>Paste Special > Text</code> in Excel. To export to <a href="https://docs.google.com/spreadsheets/create">Google Sheets</a>, use <code>Paste Special > Values only (Ctrl+Shift+V)</code> instead.</p>
+							<p class="alert alert-info"><strong>Protip:</strong> To export to <a href="https://www.microsoft.com/en/microsoft-365/excel">MS Excel</a>, copy the table below, followed by <code>Paste Special &gt; Text</code> in Excel. To export to <a href="https://docs.google.com/spreadsheets/create">Google Sheets</a>, use <code>Paste Special &gt; Values only (Ctrl+Shift+V)</code> instead.</p>
                             <button class="clipboard-js-btn" data-clipboard-target="#inboxTable">Copy table</button>
                             <div class="table-responsive">
                             <table class="table table-hover table-striped">

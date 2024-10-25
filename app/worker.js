@@ -1,3 +1,4 @@
+/* eslint-env worker */
 /*
 Brief: Background worker performing syncing/networking.
 */
