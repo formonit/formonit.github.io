@@ -5,37 +5,42 @@ Brief: Background worker performing syncing/networking.
 
 import { sendTG, syncSecurelay, getPipe } from './utils.js';
 
-let unique;
+let cache = new Map();
 
 /*
 Brief: Run a webhook server by polling piping-server. Collects only one POST request at a time.
-Arg: Unique string. Callback function to be called when a POST is received.
 */
-function pollPipe(unique, callback, errHandler) {
-    getPipe(unique)
+function pollPipe(callback, errHandler, pollInterval=0, timeout=null) {
+    const path = (cache.get('webhook')).split('/').pop();
+    getPipe(path, timeout)
             .then((dataObj) => {console.log(dataObj); callback(dataObj)})
             .catch((err) => {
                 err.cause = 'piping-server';
                 errHandler(err);
             })
-            .finally(() => setTimeout(pollPipe(...arguments), 0))
+            .finally(() => {
+              // `arguments` object below contains arguments of the non-arrow function pollPipe that encloses this scope
+              if (pollInterval !== null && cache.has('autosync')) cache.set('pollPipeTimeout' , setTimeout(() => pollPipe(...arguments), pollInterval));
+            })
 }
 
-function pollSecurelay(key, callback, errHandler, webhook=null, pollInterval=null, timeout=10000) {
-    syncSecurelay(key, webhook, timeout)
+function pollSecurelay(callback, errHandler, pollInterval=null, timeout=10000) {
+    syncSecurelay(cache.get('appKey'), cache.get('webhook'), timeout)
             .then((dataObj) => callback(dataObj))
             .catch((err) => {
                 err.cause = 'securelay';
                 errHandler(err);
             })
             .finally(() => {
-                if (pollInterval) setTimeout(pollSecurelay(...arguments), pollInterval);
+                // `arguments` object below contains arguments of the non-arrow function pollSecurelay that encloses this scope
+                if (pollInterval !== null && cache.has('autosync')) cache.set('pollSecurelayTimeout' , setTimeout(() => pollSecurelay(...arguments), pollInterval));
             })
 }
 
-function processData(TGbotKey, TGchatID){   
-    function _handler(dataObj){
-        sendTG(TGbotKey, TGchatID, JSON.stringify(dataObj))
+function processData(dataObj){   
+        const TGbotKey = cache.get('TGbotKey');
+        const TGchatID = cache.get('TGchatID');
+        if (TGbotKey && TGchatID) sendTG(TGbotKey, TGchatID, JSON.stringify(dataObj))
             .catch((err) => {
                 err.cause = 'sendTG';
                 processError(err);
@@ -47,9 +52,6 @@ function processData(TGbotKey, TGchatID){
             dataObjArray = [dataObj];
         }
         self.postMessage({msg: dataObjArray, errlvl: 0, err: null});
-    }
-    
-    return _handler;
 }
 
 function processError(err){
@@ -63,18 +65,40 @@ function processError(err){
     }
 }
 
-function handler(formonitKey, TGbotKey, TGchatID){   
-    if (! unique) unique = crypto.randomUUID().split('-')[0]; //choose the first block of hex chars from a v4 UUID
-    const webhook = `https://ppng.io/${unique}`;
-    const pollInterval = unique?null:3600000;
-    const _processData = processData(TGbotKey, TGchatID);
-    pollSecurelay(formonitKey, _processData, processError, webhook, pollInterval);
-    pollPipe(unique, _processData, processError);
+function handler(msgObj){
+  console.log("Message received from main script: " + JSON.stringify(msgObj));
+  const cmd = msgObj.cmd;
+  const data = msgObj.data;
+  
+switch(cmd) {
+  case 'cache':
+    cache = new Map(Object.entries(data));
+    // For a unique string, choose the first block of hex chars from a v4 UUID
+    cache.set('webhook', `https://ppng.io/${crypto.randomUUID().split('-')[0]}`);
+    break;
+  case 'autoSyncOn':
+    if (! cache.has('autosync')) {
+      pollSecurelay(processData, processError, 3600000);
+      pollPipe(processData, processError);
+      cache.set('autosync', true);
+    }
+    break;
+  case 'autoSyncOff':
+    if (cache.has('autosync')) {
+      clearTimeout(cache.get('pollSecurelayTimeout'));
+      clearTimeout(cache.get('pollPipeTimeout'));
+      cache.delete('autosync');
+    }
+    break;
+  case 'syncNow':
+    pollSecurelay(processData, processError);
+    break;
+  default:
+    const err = new Error('Command not found');
+    err.cause = 'handler';
+    processError(err);
+}
 }
 
 // Register handler for the event of receiving any message from main
-self.onmessage = (e) => {
-  const msgObj = e.data;
-  console.log("Message received from main script: " + JSON.stringify(msgObj));
-  handler(msgObj.formonitKey, msgObj.TGbotKey, msgObj.TGchatID);
-};
+self.onmessage = (e) => handler(e.data);

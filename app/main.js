@@ -126,6 +126,7 @@ window.config = async function config() {
     localStorage.setItem("getFrom", getFrom);
     localStorage.setItem("formonitKey", `${uuid}@alz2h`);
     localStorage.setItem("TGbotKey", document.getElementById("TGbotKey").value);
+    // Use encodeURIComponent below
     const formActionURL = 'https://securelay.vercel.app/public/' + pubKey + 
         '?ok=https%3A%2F%2Fimg.icons8.com%2Fcolor%2F30%2Fapproval--v1.png&err=https%3A%2F%2Fimg.icons8.com%2Femoji%2F30%2Fcross-mark-emoji.png';
     localStorage.setItem("formActionURL", formActionURL);
@@ -135,6 +136,20 @@ window.config = async function config() {
     spaGoTo("admin");
     localStorage.setItem("loggedIn", "true");
     startWorker();
+}
+
+window.sync = function sync() {
+      if (myWorker) myWorker.postMessage({ cmd: 'syncNow' });
+}
+
+window.autosyncToggle = function autosyncToggle() {
+  if (localStorage.getItem("autoSync") === "on") {
+    myWorker.postMessage({ cmd: 'autoSyncOff' });
+    localStorage.setItem("autoSync", "off");
+  } else {
+    myWorker.postMessage({ cmd: 'autoSyncOn' });
+    localStorage.setItem("autoSync", "on");
+  }
 }
 
 window.startWorker = function startWorker() {
@@ -163,14 +178,14 @@ window.startWorker = function startWorker() {
         }
     }
 
-    // Communicate key data to the background worker
-    myWorker.postMessage({formonitKey: localStorage.getItem("formonitKey"), 
+    // init worker
+    myWorker.postMessage({ cmd: 'cache', data: {appKey: localStorage.getItem("formonitKey"), 
                             TGbotKey: localStorage.getItem("TGbotKey"),
                             TGchatID: localStorage.getItem("TGchatID")
-                        });
-    console.log(localStorage.getItem("formonitKey"));
-    console.log(localStorage.getItem("TGbotKey"));
-
+      }});
+    
+    myWorker.postMessage({ cmd: 'autoSyncOn' });
+    
     toggleServer.value = "Kill Server";
     toggleServer.disabled = false;
 

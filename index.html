@@ -157,6 +157,8 @@
 								<summary><strong>Server</strong></summary>
                                 <button type="button" onclick="signout();">Sign out</button>
 								<input type="button" id="toggleServer" value="Kill Server" disabled; onclick="toggleWorker();">
+                <input type="checkbox" id="autoSync" checked onchange="autosyncToggle();">
+                <label for="autoSync">AutoSync</label>
 								</details>
 								
 								<details class="my-4" open>
@@ -200,7 +202,10 @@
                         <section>
                             <h3>Inbox</h3>
                             <div class="alert alert-success">
-							<div class="d-inline-flex w-100 justify-content-between"><p>This is your storageless Inbox. All data is lost once you close or even reload this window.</p><button>Sync Now</button></div>
+							<div class="d-inline-flex w-100 justify-content-between">
+              <p>This is your storageless Inbox. All data is lost once you close or even reload this window.</p>
+              <button onClick="sync();">Sync Now</button>
+              </div>
                             </div>
 							<p class="alert alert-info"><strong>Protip:</strong> To export to <a href="https://www.microsoft.com/en/microsoft-365/excel">MS Excel</a>, copy the table below, followed by <code>Paste Special &gt; Text</code> in Excel. To export to <a href="https://docs.google.com/spreadsheets/create">Google Sheets</a>, use <code>Paste Special &gt; Values only (Ctrl+Shift+V)</code> instead.</p>
                             <button class="clipboard-js-btn" data-clipboard-target="#inboxTable">Copy table</button>
