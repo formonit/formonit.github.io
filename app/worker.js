@@ -10,94 +10,100 @@ let cache = new Map();
 /*
 Brief: Run a webhook server by polling piping-server. Collects only one POST request at a time.
 */
-function pollPipe(callback, errHandler, pollInterval=0, timeout=null) {
-    const path = (cache.get('webhook')).split('/').pop();
-    getPipe(path, timeout)
-            .then((dataObj) => {console.log(dataObj); callback(dataObj)})
-            .catch((err) => {
-                err.cause = 'piping-server';
-                errHandler(err);
-            })
-            .finally(() => {
-              // `arguments` object below contains arguments of the non-arrow function pollPipe that encloses this scope
-              if (pollInterval !== null && cache.has('autosync')) cache.set('pollPipeTimeout' , setTimeout(() => pollPipe(...arguments), pollInterval));
-            })
+function pollPipe (callback, errHandler, pollInterval = 0, timeout = null) {
+  const path = (cache.get('webhook')).split('/').pop();
+  getPipe(path, timeout)
+    .then((dataObj) => { console.log(dataObj); callback(dataObj); })
+    .catch((err) => {
+      err.cause = 'piping-server';
+      errHandler(err);
+    })
+    .finally(() => {
+      // `arguments` object below contains arguments of the non-arrow function pollPipe that encloses this scope
+      if (pollInterval !== null && cache.get('autosync')) cache.set('pollPipeTimeout', setTimeout(() => pollPipe(...arguments), pollInterval));
+    });
 }
 
-function pollSecurelay(callback, errHandler, pollInterval=null, timeout=10000) {
-    syncSecurelay(cache.get('appKey'), cache.get('webhook'), timeout)
-            .then((dataObj) => callback(dataObj))
-            .catch((err) => {
-                err.cause = 'securelay';
-                errHandler(err);
-            })
-            .finally(() => {
-                // `arguments` object below contains arguments of the non-arrow function pollSecurelay that encloses this scope
-                if (pollInterval !== null && cache.has('autosync')) cache.set('pollSecurelayTimeout' , setTimeout(() => pollSecurelay(...arguments), pollInterval));
-            })
+function pollSecurelay (callback, errHandler, pollInterval = 3600000, timeout = 10000) {
+  syncSecurelay(cache.get('appKey'), cache.get('webhook'), timeout)
+    .then((dataObj) => callback(dataObj))
+    .catch((err) => {
+      err.cause = 'securelay';
+      errHandler(err);
+    })
+    .finally(() => {
+      // `arguments` object below contains arguments of the non-arrow function pollSecurelay that encloses this scope
+      if (pollInterval !== null && cache.get('autosync')) cache.set('pollSecurelayTimeout', setTimeout(() => pollSecurelay(...arguments), pollInterval));
+    });
 }
 
-function processData(dataObj){   
-        const TGbotKey = cache.get('TGbotKey');
-        const TGchatID = cache.get('TGchatID');
-        if (TGbotKey && TGchatID) sendTG(TGbotKey, TGchatID, JSON.stringify(dataObj))
-            .catch((err) => {
-                err.cause = 'sendTG';
-                processError(err);
-            })
-        let dataObjArray;
-        if (Array.isArray(dataObj)) {
-            dataObjArray = dataObj;
-        } else {
-            dataObjArray = [dataObj];
-        }
-        self.postMessage({msg: dataObjArray, errlvl: 0, err: null});
+function processData (dataObj) {
+  const TGbotKey = cache.get('TGbotKey');
+  const TGchatID = cache.get('TGchatID');
+  if (TGbotKey && TGchatID) {
+    sendTG(TGbotKey, TGchatID, JSON.stringify(dataObj))
+      .catch((err) => {
+        err.cause = 'sendTG';
+        processError(err);
+      });
+  }
+  let dataObjArray;
+  if (Array.isArray(dataObj)) {
+    dataObjArray = dataObj;
+  } else {
+    dataObjArray = [dataObj];
+  }
+  self.postMessage({ msg: dataObjArray, errlvl: 0, err: null });
 }
 
-function processError(err){
-    console.error(err);
-    if (err.message.toLowerCase().includes('timeout') || (err.message == 404)) {
-        self.postMessage({msg: `Warning: Error during fetch from ${err.cause}.`, errlvl: 1, err: err});
-    } else if (err.cause === 'sendTG') {
-        self.postMessage({msg: `Warning: Error during post to Telegram.`, errlvl: 1, err: err});
-    } else {
-        self.postMessage({msg: `Fatal: Error during fetch from ${err.cause}.`, errlvl: 2, err: err});
-    }
+function processError (err) {
+  console.error(err);
+  if (err.message.toLowerCase().includes('timeout') || (err.message == 404)) {
+    self.postMessage({ msg: `Warning: Error during fetch from ${err.cause}.`, errlvl: 1, err });
+  } else if (err.cause === 'sendTG') {
+    self.postMessage({ msg: 'Warning: Error during post to Telegram.', errlvl: 1, err });
+  } else {
+    self.postMessage({ msg: `Fatal: Error during fetch from ${err.cause}.`, errlvl: 2, err });
+  }
 }
 
-function handler(msgObj){
-  console.log("Message received from main script: " + JSON.stringify(msgObj));
+function handler (msgObj) {
+  console.log('Message received from main script: ' + JSON.stringify(msgObj));
   const cmd = msgObj.cmd;
   const data = msgObj.data;
-  
-switch(cmd) {
-  case 'cache':
-    cache = new Map(Object.entries(data));
-    // For a unique string, choose the first block of hex chars from a v4 UUID
-    cache.set('webhook', `https://ppng.io/${crypto.randomUUID().split('-')[0]}`);
-    break;
-  case 'autoSyncOn':
-    if (! cache.has('autosync')) {
-      pollSecurelay(processData, processError, 3600000);
+
+  switch (cmd) {
+    case 'cache':
+      cache = new Map(Object.entries(data));
+      // For a unique string, choose the first block of hex chars from a v4 UUID
+      cache.set('webhook', `https://ppng.io/${crypto.randomUUID().split('-')[0]}`);
+      break;
+    case 'launch':
+      pollSecurelay(processData, processError);
       pollPipe(processData, processError);
-      cache.set('autosync', true);
-    }
-    break;
-  case 'autoSyncOff':
-    if (cache.has('autosync')) {
-      clearTimeout(cache.get('pollSecurelayTimeout'));
-      clearTimeout(cache.get('pollPipeTimeout'));
-      cache.delete('autosync');
-    }
-    break;
-  case 'syncNow':
-    pollSecurelay(processData, processError);
-    break;
-  default:
-    const err = new Error('Command not found');
-    err.cause = 'handler';
-    processError(err);
-}
+      break;
+    case 'autoSyncOn':
+      if (!cache.get('autosync')) {
+        pollSecurelay(processData, processError);
+        pollPipe(processData, processError);
+        cache.set('autosync', 'on');
+      }
+      break;
+    case 'autoSyncOff':
+      if (cache.get('autosync')) {
+        clearTimeout(cache.get('pollSecurelayTimeout'));
+        clearTimeout(cache.get('pollPipeTimeout'));
+        cache.delete('autosync');
+      }
+      break;
+    case 'syncNow':
+      pollSecurelay(processData, processError, null);
+      break;
+    default:
+      const err = new Error('Command not found');
+      err.cause = 'handler';
+      processError(err);
+  }
 }
 
 // Register handler for the event of receiving any message from main

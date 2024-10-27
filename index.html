@@ -135,8 +135,11 @@
 						<div class="spa-page" id="settings">
                             <section>
                                 <h3>Settings</h3>
+                                <button type="button" class="my-4" onclick="signout();">Sign out</button>
+                                <details class="my-4" open>
+                                <summary><strong>Telegram</strong></summary>
                                 <form id="config" onsubmit="config();return false;" target="hidden_iframe">
-                                    <p>Setup in just 2 easy steps.</p>
+                                    <p>Setup Telegram notificiation in just 2 easy steps.</p>
 
                                     <label for="TGbotKey" class="form-label">1. Enter your Telegram Bot API Token (available from <a href="https://t.me/botfather">@BotFather</a>):</label>
                                     <input type="text" id="TGbotKey" class="form-control" autocomplete="on" required>
@@ -148,18 +151,20 @@
                                     <br><br>
                                     <button type="submit" class="btn btn-success">Save</button>
                                 </form>
+                                </details>
+                                
+                                <details class="my-4" open>
+								<summary><strong>Sync</strong></summary>
+              <button onClick="sync();">Sync Now</button>
+								<input type="button" id="toggleServer" value="Stop syncing" disabled onclick="toggleWorker();">
+                <input type="checkbox" id="autoSync" checked onchange="autosyncToggle();">
+                <label for="autoSync">Enable automatic syncing</label>
+								</details>                                
                             </section>
                         </div>
                         <div class="spa-page" id="admin">
                             <section>
                                 <h3>Admin</h3>
-                                <details class="my-4" open>
-								<summary><strong>Server</strong></summary>
-                                <button type="button" onclick="signout();">Sign out</button>
-								<input type="button" id="toggleServer" value="Kill Server" disabled; onclick="toggleWorker();">
-                <input type="checkbox" id="autoSync" checked onchange="autosyncToggle();">
-                <label for="autoSync">AutoSync</label>
-								</details>
 								
 								<details class="my-4" open>
 								<summary><strong>Test</strong></summary>
@@ -230,7 +235,7 @@
                         <p class="d-flex justify-content-start"><button type="button" class="btn btn-danger mt-4" onclick="main();" id="login">Let's get started</button></p>
 
                         <div class="badge bg-warning position-fixed bottom-0 end-0">
-                            AutoSync: <span id="serverStatus">Off</span>
+                            Sync: <span id="serverStatus">Off</span>
                         </div>
                     </div>
                 </main>
