@@ -5,7 +5,7 @@ Brief: Background worker performing syncing/networking.
 
 import { sendTG, syncSecurelay, getPipe } from './utils.js';
 
-let cache = new Map();
+const cache = new Map();
 
 /*
 Brief: Run a webhook server by polling piping-server. Collects only one POST request at a time.
@@ -20,7 +20,7 @@ function pollPipe (callback, errHandler, pollInterval = 0, timeout = null) {
     })
     .finally(() => {
       // `arguments` object below contains arguments of the non-arrow function pollPipe that encloses this scope
-      if (pollInterval !== null && cache.get('autosync')) cache.set('pollPipeTimeout', setTimeout(() => pollPipe(...arguments), pollInterval));
+      if (pollInterval !== null && cache.get('autoSync')) cache.set('pollPipeTimeout', setTimeout(() => pollPipe(...arguments), pollInterval));
     });
 }
 
@@ -33,14 +33,15 @@ function pollSecurelay (callback, errHandler, pollInterval = 3600000, timeout = 
     })
     .finally(() => {
       // `arguments` object below contains arguments of the non-arrow function pollSecurelay that encloses this scope
-      if (pollInterval !== null && cache.get('autosync')) cache.set('pollSecurelayTimeout', setTimeout(() => pollSecurelay(...arguments), pollInterval));
+      if (pollInterval !== null && cache.get('autoSync')) cache.set('pollSecurelayTimeout', setTimeout(() => pollSecurelay(...arguments), pollInterval));
     });
 }
 
 function processData (dataObj) {
+  const TGnotify = cache.get('TGnotify');
   const TGbotKey = cache.get('TGbotKey');
   const TGchatID = cache.get('TGchatID');
-  if (TGbotKey && TGchatID) {
+  if (TGnotify && TGbotKey && TGchatID) {
     sendTG(TGbotKey, TGchatID, JSON.stringify(dataObj))
       .catch((err) => {
         err.cause = 'sendTG';
@@ -74,7 +75,9 @@ function handler (msgObj) {
 
   switch (cmd) {
     case 'cache':
-      cache = new Map(Object.entries(data));
+      for (const prop in data) {
+        cache.set(prop, data[prop]);
+      }
       // For a unique string, choose the first block of hex chars from a v4 UUID
       cache.set('webhook', `https://ppng.io/${crypto.randomUUID().split('-')[0]}`);
       break;
@@ -83,17 +86,17 @@ function handler (msgObj) {
       pollPipe(processData, processError);
       break;
     case 'autoSyncOn':
-      if (!cache.get('autosync')) {
+      if (!cache.get('autoSync')) {
         pollSecurelay(processData, processError);
         pollPipe(processData, processError);
-        cache.set('autosync', 'on');
+        cache.set('autoSync', 'on');
       }
       break;
     case 'autoSyncOff':
-      if (cache.get('autosync')) {
+      if (cache.get('autoSync')) {
         clearTimeout(cache.get('pollSecurelayTimeout'));
         clearTimeout(cache.get('pollPipeTimeout'));
-        cache.delete('autosync');
+        cache.delete('autoSync');
       }
       break;
     case 'syncNow':

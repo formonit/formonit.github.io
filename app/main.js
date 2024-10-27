@@ -4,13 +4,13 @@ Brief: Main entry point for the app.
 
 import * as utils from './utils.js';
 
+const checkImgURL = 'https://img.icons8.com/color/30/approval--v1.png';
+const crossImgURL = 'https://img.icons8.com/emoji/30/cross-mark-emoji.png';
 let myWorker = null;
+let cache = null;
+
 let numReadMsgs = 0;
 let numTotalMsgs = 0;
-const logs = document.getElementById('logs');
-const toggleServer = document.getElementById('toggleServer');
-
-if (! localStorage.getItem('autoSync')) document.getElementById('autoSync').checked = false;
 
 window.toggleDarkMode = function toggleDarkMode () {
   const rootElement = document.documentElement;
@@ -27,6 +27,7 @@ window.toggleDarkMode = function toggleDarkMode () {
 };
 
 function logThis (report) {
+  const logs = document.getElementById('logs');
   const row = document.createElement('p');
   row.append(`${Date()}: ${report}`);
   logs.prepend(row);
@@ -43,10 +44,10 @@ window.updateUnreadCount = function updateUnreadCount () {
 function inbox (dataArray) {
   for (const data of dataArray) {
     if (data.From === 'FormonitViewCounter') {
-      let viewCount = localStorage.getItem('FormonitViewCounter');
+      let viewCount = cache.getItem('FormonitViewCounter');
       ++viewCount;
       document.getElementById('FormonitViewCounter').innerText = `which has ${viewCount} views`;
-      localStorage.setItem('FormonitViewCounter', viewCount);
+      cache.setItem('FormonitViewCounter', viewCount);
       continue;
     }
 
@@ -90,54 +91,27 @@ function inbox (dataArray) {
 }
 
 window.genUUID = async function genUUID () {
-  // v4 UUID looks like xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx in hexadecimal. See Wikipedia.
-  // M stores version & N, the variant. All the x digits above are cryptographically random.
-  // For our uuid we simply choose the first block of hex chars from a v4 UUID.
-  const response = await fetch('https://securelay.vercel.app/keys');
-  const keypair = await response.json();
-  document.getElementById('uuid').value = keypair.private;
-};
-
-window.fetchChatID = async function fetchChatID () {
-  logThis('Fetching Telegram chat ID');
-  const apiEndpoint = 'https://api.telegram.org/bot' + document.getElementById('TGbotKey').value + '/getUpdates';
-  const response = await fetch(apiEndpoint); // Make request
-  if (!response.ok) {
-    logThis(`Telegram API status code: ${response.status}. Is Bot API Token ok?`);
-    alert('Failed to fetch chat ID. Check your Bot API Token!');
-    return;
-  }
-  const data = await response.json();
   try {
-    const TGchatID = data.result[0].message.chat.id;
-    document.getElementById('chatID').value = TGchatID;
-    localStorage.setItem('TGchatID', TGchatID);
-  } catch (e) {
-    alert('Failed to fetch chat ID. Send any text to the Telegram Bot then try again.');
+    const appKey = await utils.keySecurelay();
+    document.getElementById('uuid').value = appKey;
+  } catch (err) {
+    console.error(err);
+    alert('Some error has occured!');
+    return false;
   }
 };
 
-window.config = async function config () {
-  const uuid = document.getElementById('uuid').value;
-  const response = await fetch(`https://securelay.vercel.app/keys/${uuid}`);
-  if (!response.ok) { alert('Invalid Formonit Access Key!'); return; }
-  const respJson = await response.json();
-  const pubKey = respJson.public;
-  console.log('Public key = ' + pubKey);
-  const getFrom = 'https://securelay.vercel.app/private/' + uuid;
-  localStorage.setItem('getFrom', getFrom);
-  localStorage.setItem('formonitKey', `${uuid}@alz2h`);
-  localStorage.setItem('TGbotKey', document.getElementById('TGbotKey').value);
-  // Use encodeURIComponent below
-  const formActionURL = 'https://securelay.vercel.app/public/' + pubKey +
-        '?ok=https%3A%2F%2Fimg.icons8.com%2Fcolor%2F30%2Fapproval--v1.png&err=https%3A%2F%2Fimg.icons8.com%2Femoji%2F30%2Fcross-mark-emoji.png';
-  localStorage.setItem('formActionURL', formActionURL);
-  const postTo = 'https://api.telegram.org/bot' + document.getElementById('TGbotKey').value + '/sendMessage';
-  localStorage.setItem('postTo', postTo);
-  spaHide('login');
-  spaGoTo('admin');
-  localStorage.setItem('loggedIn', 'true');
-  startWorker();
+window.fetchChatID = async function fetchChatID (botAPIKey) {
+  console.log('Fetching Telegram chat ID' + botAPIKey);
+  try {
+    const TGchatID = await utils.chatIDTG(botAPIKey);
+    document.getElementById('chatID').value = TGchatID;
+    document.getElementById('chatIDShow').value = TGchatID;
+  } catch (e) {
+    console.error(e);
+    alert('Failed to fetch chat ID. Send any text to the Telegram Bot then try again.');
+    return false;
+  }
 };
 
 window.sync = function sync () {
@@ -147,22 +121,22 @@ window.sync = function sync () {
 function updateSyncStatusBadge () {
   const badge = document.getElementById('serverStatus');
   if (myWorker) {
-    const autoSync = localStorage.getItem('autoSync');
+    const autoSync = cache.getItem('autoSync');
     badge.innerHTML = autoSync ? 'auto <span class="spinner-grow spinner-grow-sm"></span>' : 'manual';
   } else {
     badge.innerHTML = 'off';
   }
 }
 
-window.autosyncToggle = function autosyncToggle () {
-  if (localStorage.getItem('autoSync') === 'on') {
-    localStorage.removeItem('autoSync');
-    if (! myWorker) return; 
+window.autoSyncToggle = function autoSyncToggle () {
+  if (cache.getItem('autoSync') === 'on') {
+    cache.removeItem('autoSync');
+    if (!myWorker) return;
     myWorker.postMessage({ cmd: 'autoSyncOff' });
     document.getElementById('serverStatus').innerText = 'manual';
   } else {
-    localStorage.setItem('autoSync', 'on');
-    if (! myWorker) return;
+    cache.setItem('autoSync', 'on');
+    if (!myWorker) return;
     myWorker.postMessage({ cmd: 'autoSyncOn' });
     updateSyncStatusBadge();
   }
@@ -194,28 +168,29 @@ window.startWorker = function startWorker () {
     }
   };
 
-  console.log(localStorage.getItem('autoSync'));
   // init worker
   myWorker.postMessage({
     cmd: 'cache',
     data: {
-      appKey: localStorage.getItem('formonitKey'),
-      TGbotKey: localStorage.getItem('TGbotKey'),
-      TGchatID: localStorage.getItem('TGchatID'),
-      autoSync: localStorage.getItem('autoSync')
+      appKey: cache.getItem('appKey'),
+      TGbotKey: cache.getItem('TGbotKey'),
+      TGchatID: cache.getItem('TGchatID'),
+      TGnotify: cache.getItem('TGnotify'),
+      autoSync: cache.getItem('autoSync')
     }
   });
 
   // Launch sync
   myWorker.postMessage({ cmd: 'launch' });
 
+  const toggleServer = document.getElementById('toggleServer');
   toggleServer.value = 'Stop syncing';
   toggleServer.disabled = false;
 
   logThis('Started sync');
   updateSyncStatusBadge();
 
-  const formActionURL = localStorage.getItem('formActionURL');
+  const formActionURL = cache.getItem('formActionURL');
   logThis('Public key = ' + formActionURL);
   document.getElementById('formActionURL').innerText = formActionURL;
   // document.getElementById("readyForm").href = `./${btoa(formActionURL).replace(/\+/g,'_').replace(/\//g,'-').replace(/=+$/,'')}`;
@@ -231,6 +206,7 @@ window.stopWorker = function stopWorker () {
   myWorker = null;
   sessionStorage.removeItem('server');
   console.log('Worker terminated');
+  const toggleServer = document.getElementById('toggleServer');
   toggleServer.value = 'Start syncing';
   logThis('Stopped syncing');
   updateSyncStatusBadge();
@@ -247,20 +223,70 @@ window.toggleWorker = function toggleWorker () {
 window.signout = function signout () {
   stopWorker();
   localStorage.clear();
+  sessionStorage.clear();
   location.reload();
 };
 
-window.main = function main () {
-  // Enable config if no prior settings found in localStorage
-  if (localStorage.getItem('loggedIn')) {
-    spaHide('login');
-    startWorker();
-    spaGoTo('admin');
+window.signIn = async function signIn (callerForm) {
+  const data = new FormData(callerForm);
+  const appKey = data.get('appKey');
+  if (data.get('keepSignedIn') === 'on') {
+    cache = localStorage;
   } else {
-    document.getElementById('signIn').showModal();
-    spaGoTo('settings');
+    cache = sessionStorage;
+  }
+  try {
+    const formActionURL = await utils.publicUrlSecurelay(appKey);
+    const query = `?ok=${encodeURIComponent(checkImgURL)}&err=${encodeURIComponent(crossImgURL)}`;
+    cache.setItem('appKey', appKey);
+    cache.setItem('formActionURL', formActionURL + query);
+    cache.setItem('signed', 'in');
+    spaHide('login');
+    logThis('Sign-in successful');
+    autoSyncToggle();
+    startWorker();
+  } catch (err) {
+    console.error(err);
+    if (err.message == 404) {
+      alert('Provided key is wrong!');
+    } else {
+      alert('Some error occurred!');
+    }
+    return false;
   }
 };
+
+window.TGconfig = function TGconfig (callerForm) {
+  const formData = new FormData(callerForm);
+  const dataObj = {};
+  for (const [key, val] of formData.entries()) {
+    console.log(key + ',' + val);
+    dataObj[key] = val;
+    cache.setItem(key, val);
+  }
+  if (myWorker) myWorker.postMessage({ cmd: 'cache', data: dataObj });
+  callerForm.reset();
+};
+
+window.main = function main () {
+  // Enable sign-in if no prior cache found in localStorage or sessionStorage
+  if (cache !== null) {
+    spaHide('login');
+    startWorker();
+    spaGoTo('inbox');
+  } else {
+    document.getElementById('signIn').showModal();
+    spaGoTo('forms');
+  }
+};
+
+if (localStorage.getItem('signed') === 'in') {
+  cache = localStorage;
+} else if (sessionStorage.getItem('signed') === 'in') {
+  cache = sessionStorage;
+}
+
+if (cache !== null && !cache.getItem('autoSync')) document.getElementById('autoSync').checked = false;
 
 if (sessionStorage.getItem('server')) {
   spaHide('login');

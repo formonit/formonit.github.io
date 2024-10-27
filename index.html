@@ -134,14 +134,17 @@
                 <button type="button" class="my-4" onclick="signout();">Sign out</button>
                 <details class="my-4" open>
                   <summary><strong>Telegram</strong></summary>
-                  <form id="config" onsubmit="config();return false;" target="hidden_iframe">
+                  <form onsubmit="event.preventDefault();TGconfig(this);">
                     <p>Setup Telegram notificiation in just 2 easy steps.</p>
                     <label for="TGbotKey" class="form-label">1. Enter your Telegram Bot API Token (available from <a href="https://t.me/botfather">@BotFather</a>):</label>
-                    <input type="text" id="TGbotKey" class="form-control" autocomplete="on" required>
+                    <input type="text" id="TGbotKey" name="TGbotKey" class="form-control" autocomplete="on" required>
                     <br>
                     <p>2. Send any text to the Bot. Then, click Fetch Chat ID.</p>
-                    <button type="button" onclick="fetchChatID();">Fetch Chat ID</button>
-                    <input type="text" id="chatID" placeholder="Chat ID" disabled required>
+                    <button type="button" onclick="fetchChatID(this.parentElement.elements['TGbotKey'].value);">Fetch Chat ID</button>
+                    <input type="text" id="chatID" name="TGchatID" hidden required>
+                    <input type="text" id="chatIDShow" disabled>
+                    <input type="checkbox" name="TGnotify" id="TGnotify" hidden checked>
+                    <label for="TGnotify" hidden>Enable Telegram notification</label>
                     <br><br>
                     <button type="submit" class="btn btn-success">Save</button>
                   </form>
@@ -150,7 +153,7 @@
                   <summary><strong>Sync</strong></summary>
                   <button onClick="sync();">Sync Now</button>
                   <input type="button" id="toggleServer" value="Stop syncing" disabled onclick="toggleWorker();">
-                  <input type="checkbox" id="autoSync" checked onchange="autosyncToggle();">
+                  <input type="checkbox" id="autoSync" checked onchange="autoSyncToggle();">
                   <label for="autoSync">Enable automatic syncing</label>
                 </details>
               </section>
@@ -239,10 +242,10 @@
         <h5>Sign in</h5>
         <button type="button" class="btn-close ms-auto" onClick="document.getElementById('signIn').close();"></button>
       </div>
-      <form method="dialog">
+      <form method="dialog" onsubmit="signIn(this);">
         <p>Generate or enter your Formonit Access Key</p>
         <button type="button" class="btn btn-success me-2" onclick="genUUID();">Generate New Key</button>
-        <input type="text" id="uuid" placeholder="Enter Your Key" required>
+        <input type="text" id="uuid" name="appKey" placeholder="Enter Your Key" required>
         <div id="keyAlert" class="alert alert-warning my-4">Store this key safely for all future logins. It cannot be recovered, if lost.</div>
         <input type="checkbox" id="keepSignedIn" name="keepSignedIn" checked>
         <label for="keepSignedIn" data-bs-toggle="tooltip" title="Uses localStorage for storing session">Keep me signed in</label>

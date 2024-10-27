@@ -74,6 +74,47 @@ export async function syncSecurelay (key, webhook = null, timeout = 5000) {
     });
 }
 
+function randElement (array) {
+  const randomIdx = Math.floor(Math.random() * array.length);
+  return array[randomIdx];
+}
+
+export async function keySecurelay (timeout = 5000) {
+  const endpointsObj = await fetch('https://raw.githubusercontent.com/securelay/api/main/endpoints.json', {
+    signal: timeout ? AbortSignal.timeout(timeout) : null
+  })
+    .then((response) => response.text())
+    .then((data) => JSON.parse(data));
+  const endpointID = randElement(Object.keys(endpointsObj));
+  const endpoint = randElement(endpointsObj[endpointID]);
+  const url = `${endpoint}/keys`;
+  const data = await fetch(url, { signal: timeout ? AbortSignal.timeout(timeout) : null })
+    .then((response) => {
+      if (!response.ok) throw new Error(response.status);
+      return response.json();
+    });
+  return `${data.private}@${endpointID}`;
+}
+
+export async function publicUrlSecurelay (key, timeout = 5000) {
+  const [privateKey, endpointID] = key.split('@');
+  const endpointsObj = await fetch('https://raw.githubusercontent.com/securelay/api/main/endpoints.json', {
+    signal: timeout ? AbortSignal.timeout(timeout) : null
+  })
+    .then((response) => response.text())
+    .then((data) => JSON.parse(data));
+  if (!Object.hasOwn(endpointsObj, endpointID)) throw new Error(404);
+  const endpoint = randElement(endpointsObj[endpointID]);
+  console.log(endpoint);
+  const url = `${endpoint}/keys/${privateKey}`;
+  const data = await fetch(url, { signal: timeout ? AbortSignal.timeout(timeout) : null })
+    .then((response) => {
+      if (!response.ok) throw new Error(response.status);
+      return response.json();
+    });
+  return `${endpoint}/public/${data.public}`;
+}
+
 /*
 Brief: GET JSON from piping-server
 Ref: https://github.com/nwtgck/piping-server
