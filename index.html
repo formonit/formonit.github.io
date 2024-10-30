@@ -138,7 +138,9 @@
                     <p>Setup Telegram notificiation in just 2 easy steps.</p>
                     <label for="TGbotKey" class="form-label">1. Enter your Telegram Bot API Token (available from <a href="https://t.me/botfather">@BotFather</a>):</label>
                     <input type="text" id="TGbotKey" name="TGbotKey" class="form-control" autocomplete="on" required>
-                    <br>
+                    <input type="checkbox" id="togglePasswordVisibilityCBox1" onchange="togglePasswordVisibility('TGbotKey');" checked>
+                    <label for="togglePasswordVisibilityCBox1">Show</label>
+                    <br><br>
                     <p>2. Send any text to the Bot. Then, click Fetch Chat ID.</p>
                     <button type="button" onclick="fetchChatID(this.parentElement.elements['TGbotKey'].value);">Fetch Chat ID</button>
                     <input type="text" id="chatID" name="TGchatID" hidden required>
@@ -245,7 +247,10 @@
       <form method="dialog" onsubmit="signIn(this);">
         <p>Generate or enter your Formonit Access Key</p>
         <button type="button" class="btn btn-success me-2" onclick="genUUID();">Generate New Key</button>
-        <input type="text" id="uuid" name="appKey" placeholder="Enter Your Key" required>
+        <input type="password" id="uuid" name="appKey" placeholder="Enter Your Key" required>
+                    <input type="checkbox" id="togglePasswordVisibilityCBox0" onchange="togglePasswordVisibility('uuid');">
+                    <label for="togglePasswordVisibilityCBox0">Show</label>
+
         <div id="keyAlert" class="alert alert-warning my-4">Store this key safely for all future logins. It cannot be recovered, if lost.</div>
         <input type="checkbox" id="keepSignedIn" name="keepSignedIn" checked>
         <label for="keepSignedIn" data-bs-toggle="tooltip" title="Uses localStorage for storing session">Keep me signed in</label>

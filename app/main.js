@@ -268,6 +268,15 @@ window.TGconfig = function TGconfig (callerForm) {
   callerForm.reset();
 };
 
+window.togglePasswordVisibility = function (elementID) {
+  var input = document.getElementById(elementID);
+  if (input.type === "password") {
+    input.type = "text";
+  } else {
+    input.type = "password";
+  }
+}
+
 window.main = function main () {
   // Enable sign-in if no prior cache found in localStorage or sessionStorage
   if (cache !== null) {
