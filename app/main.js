@@ -194,7 +194,8 @@ window.startWorker = function startWorker () {
   logThis('Public key = ' + formActionURL);
   document.getElementById('formActionURL').innerText = formActionURL;
   // document.getElementById("readyForm").href = `./${btoa(formActionURL).replace(/\+/g,'_').replace(/\//g,'-').replace(/=+$/,'')}`;
-  document.getElementById('testFormBtn').setAttribute('formaction', formActionURL);
+  const query = `?ok=${encodeURIComponent(checkImgURL)}&err=${encodeURIComponent(crossImgURL)}`;
+  document.getElementById('testFormBtn').setAttribute('formaction', formActionURL + query);
   document.getElementById('testFormBtn').disabled = false;
 };
 
@@ -237,9 +238,8 @@ window.signIn = async function signIn (callerForm) {
   }
   try {
     const formActionURL = await utils.publicUrlSecurelay(appKey);
-    const query = `?ok=${encodeURIComponent(checkImgURL)}&err=${encodeURIComponent(crossImgURL)}`;
     cache.setItem('appKey', appKey);
-    cache.setItem('formActionURL', formActionURL + query);
+    cache.setItem('formActionURL', formActionURL);
     cache.setItem('signed', 'in');
     spaHide('login');
     logThis('Sign-in successful');
