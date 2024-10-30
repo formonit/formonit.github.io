@@ -2,6 +2,8 @@
 Brief: Helper utilities.
 */
 
+import securelayEndpoint, * as securelay from 'https://cdn.jsdelivr.net/gh/securelay/api@main/script.js';
+
 /*
 Brief: Convert URL or Percent-encoded string to JSON string.
 */
@@ -58,61 +60,20 @@ Arg: Key is string of the format `<privateKey>@<endpointID>`. Optionally provide
 Error: Throws status code of the response when promise is rejected.
 */
 export async function syncSecurelay (key, webhook = null, timeout = 5000) {
+  console.log(key);
   const [privateKey, endpointID] = key.split('@');
-  const endpoint = await fetch('https://raw.githubusercontent.com/securelay/api/main/endpoints.json', {
-    signal: timeout ? AbortSignal.timeout(timeout) : null
-  })
-    .then((response) => response.text())
-    .then((data) => JSON.parse(data)[endpointID][0]);
-  let query = '';
-  if (webhook) query = `?hook=${encodeURIComponent(webhook)}`;
-  const url = `${endpoint}/private/${privateKey}${query}`;
-  return fetch(url, { signal: timeout ? AbortSignal.timeout(timeout) : null })
-    .then((response) => {
-      if (!response.ok) throw new Error(response.status);
-      return response.json();
-    });
-}
-
-function randElement (array) {
-  const randomIdx = Math.floor(Math.random() * array.length);
-  return array[randomIdx];
+  return securelay.sync(privateKey, endpointID, webhook, timeout);
 }
 
 export async function keySecurelay (timeout = 5000) {
-  const endpointsObj = await fetch('https://raw.githubusercontent.com/securelay/api/main/endpoints.json', {
-    signal: timeout ? AbortSignal.timeout(timeout) : null
-  })
-    .then((response) => response.text())
-    .then((data) => JSON.parse(data));
-  const endpointID = randElement(Object.keys(endpointsObj));
-  const endpoint = randElement(endpointsObj[endpointID]);
-  const url = `${endpoint}/keys`;
-  const data = await fetch(url, { signal: timeout ? AbortSignal.timeout(timeout) : null })
-    .then((response) => {
-      if (!response.ok) throw new Error(response.status);
-      return response.json();
-    });
-  return `${data.private}@${endpointID}`;
+  const [ _, endpointID ] = await securelayEndpoint();
+  const privateKey = await securelay.key(endpointID, timeout);
+  return `${privateKey}@${endpointID}`;
 }
 
 export async function publicUrlSecurelay (key, timeout = 5000) {
   const [privateKey, endpointID] = key.split('@');
-  const endpointsObj = await fetch('https://raw.githubusercontent.com/securelay/api/main/endpoints.json', {
-    signal: timeout ? AbortSignal.timeout(timeout) : null
-  })
-    .then((response) => response.text())
-    .then((data) => JSON.parse(data));
-  if (!Object.hasOwn(endpointsObj, endpointID)) throw new Error(404);
-  const endpoint = randElement(endpointsObj[endpointID]);
-  console.log(endpoint);
-  const url = `${endpoint}/keys/${privateKey}`;
-  const data = await fetch(url, { signal: timeout ? AbortSignal.timeout(timeout) : null })
-    .then((response) => {
-      if (!response.ok) throw new Error(response.status);
-      return response.json();
-    });
-  return `${endpoint}/public/${data.public}`;
+  return securelay.publicUrl(privateKey, endpointID, timeout);
 }
 
 /*
