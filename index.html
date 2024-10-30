@@ -1,264 +1,266 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Formonit</title>
-        <meta name="description" content="Free, self-hosted, open-source form backend solution. No installation required for hosting. Lightweight server runs in browser. Backend sends form data as a Telegram bot to your Telegram account.">
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-        <link rel="icon" type="image/x-icon" href="favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-        <link rel="manifest" href="site.webmanifest">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/SomajitDey/webtools@0.0.0/prism/prism.min.css">
-    </head>
-    <body onload="spaHide('jsAlert'); spaRestore(); new ClipboardJS('.clipboard-js-btn');" class="d-flex flex-column min-vh-100">
-        <header class="container-fluid p-5 text-bg-primary text-center">
-            <a class="navbar-dark nav-link" href="/" onClick="spaGoTo(spaHomePageID);"><h1>Welcome to Formonit</h1></a>
-        </header>
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-center">
-                                <ul class="navbar-nav">
-                                    <li class="nav-item"><a class="nav-link" href="#about" onClick="spaGoTo('about');">About</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="https://github.com/formonit/formonit.github.io">Source</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="https://buymeacoffee.com/SomajitDey">Donate</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="https://github.com/formonit/formonit.github.io/discussions">Contact</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="ToS.txt">Terms</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="PRIVACY.txt">Privacy</a></li>
-                                </ul>
-</nav>
-        <div class="container-fluid">
-            <div class="row">
-                <nav class="col-sm-1 bg-secondary">
-                    <div class="sticky-top">
-                        <div class="d-flex flex-column min-vh-100 justify-content-start align-items-center py-3">
-                            <a class="btn btn-info my-3" href="#inbox" onclick="spaGoTo('inbox'); updateUnreadCount();">Inbox<br><span id ="unread" class="badge bg-danger">0</span></a>
-                            <a class="btn btn-info my-3" href="#forms" onclick="spaGoTo('forms');">Forms</a>
-                            <a class="btn btn-info my-3" href="#chats" onclick="spaGoTo('chats');">Chats</a>
-                            <a class="btn btn-info my-3" href="#settings" onclick="spaGoTo('settings');"><img width="25" height="25" src="https://img.icons8.com/3d-fluency/50/gear--v1.png" alt="gear--v1"/></a>
-                            <a class="btn btn-info my-3" href="#admin" onclick="spaGoTo('admin');"><img width="25" height="25" src="https://img.icons8.com/3d-fluency/50/test-passed.png" alt="test-passed"/></a>
-                            <button type="button" class="btn btn-info my-3" href="#admin" onclick="toggleDarkMode();"><img width="25" height="25" src="https://img.icons8.com/fluency/48/day-and-night.png" alt="day-and-night"/></button>
-                        </div>
-                    </div>
-                </nav>
-                <main class="col-sm-11 bg-light pt-5 pb-4">
-                    <div class="text-bg-light">
-
-                        <p class="alert alert-danger" id="jsAlert">You don't have JavaScript enabled! This page cannot function without it.</p>
-
-                        <div class="spa-page" id="about">
-                            <section>
-                                <h3>About</h3>
-                                <p>Formonit gives you a free and easy, self-hosted form backend solution that runs in your browser! Just sign up and then embed the following HTML
-                                   form in your website. You also get your own contact form URL that you can use if you don't have a website.
-                                </p>
-                                <p>As long as this Tab is open in your browser, whenever your users submit the form, your Inbox here will be populated.
-                                    You will also be notified via Telegram.
-                                </p>
-
-                                <h3>Powered by</h3>
-                                <ul class="nav nav-pills nav-justified">
-                                    <li class="nav-item"><a class="nav-link" href="https://securelay.github.io/">securelay</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="https://github.com/nwtgck/piping-server">piping-server</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="https://core.telegram.org/bots/api">Telegram Bot</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="https://getbootstrap.com/">bootstrap</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="https://github.com/zenorocha/clipboard.js">clipboard.js</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="https://jsdelivr.com/">jsdelivr</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="https://prismjs.com/">prism</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="https://www.freeformatter.com/html-formatter.html">freeformatter.com</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="https://favicon.io/">favicon.io</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="https://github.com/twitter/twemoji/blob/master/assets/svg/1f5e8.svg">twemoji</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="https://icons8.com/icons">icons8.com</a></li>
-                                </ul>
-                            </section>
-                        </div>
-
-                        <div class="spa-page" id="forms">
-                        <h3>Forms</h3>
-						<details class="my-4" open>
-						<summary><strong>Embeddable snippet</strong></summary>
-						<p>Edit the below snippet as follows and embed in your website.</p>
-						<ol class="list-group list-group-numbered">
-							<li class="list-group-item list-group-item-success">
-								Replace <code>XXXXX</code> with <mark id="formActionURL">the form action URL generated upon sign-up</mark>
-								<button class="clipboard-js-btn" data-clipboard-target="#formActionURL">Copy URL</button>
-							</li>
-							<li class="list-group-item list-group-item-info">Replace <code>YYYYY</code> with a unique descriptive string</li>
-						</ol>
-<pre><code class="language-html" id="formSnippet">&lt;form action=&quot;XXXXX&quot; method=&quot;POST&quot; target=&quot;hidden_iframe&quot;&gt;
+  <head>
+    <title>Formonit</title>
+    <meta name="description" content="Free, self-hosted, open-source form backend solution. No installation required for hosting. Lightweight server runs in browser. Backend sends form data as a Telegram bot to your Telegram account.">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/SomajitDey/webtools@0.0.0/prism/prism.min.css">
+  </head>
+  <body onload="spaHide('jsAlert'); spaRestore(); new ClipboardJS('.clipboard-js-btn');" class="d-flex flex-column min-vh-100">
+    <header class="container-fluid p-5 text-bg-primary text-center">
+      <a class="navbar-dark nav-link" href="/" onClick="spaGoTo(spaHomePageID);">
+        <h1>Welcome to Formonit</h1>
+      </a>
+    </header>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-center">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="#about" onClick="spaGoTo('about');">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="https://github.com/formonit/formonit.github.io">Source</a></li>
+        <li class="nav-item"><a class="nav-link" href="https://buymeacoffee.com/SomajitDey">Donate</a></li>
+        <li class="nav-item"><a class="nav-link" href="https://github.com/formonit/formonit.github.io/discussions">Contact</a></li>
+        <li class="nav-item"><a class="nav-link" href="ToS.txt">Terms</a></li>
+        <li class="nav-item"><a class="nav-link" href="PRIVACY.txt">Privacy</a></li>
+      </ul>
+    </nav>
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-sm-1 bg-secondary">
+          <div class="sticky-top">
+            <div class="d-flex flex-column min-vh-100 justify-content-start align-items-center py-3">
+              <a class="btn btn-info my-3" href="#inbox" onclick="spaGoTo('inbox'); updateUnreadCount();">Inbox<br><span id ="unread" class="badge bg-danger">0</span></a>
+              <a class="btn btn-info my-3" href="#forms" onclick="spaGoTo('forms');">Forms</a>
+              <a class="btn btn-info my-3" href="#chats" onclick="spaGoTo('chats');">Chats</a>
+              <a class="btn btn-info my-3" href="#settings" onclick="spaGoTo('settings');"><img width="25" height="25" src="https://img.icons8.com/3d-fluency/50/gear--v1.png" alt="gear--v1"/></a>
+              <a class="btn btn-info my-3" href="#admin" onclick="spaGoTo('admin');"><img width="25" height="25" src="https://img.icons8.com/3d-fluency/50/test-passed.png" alt="test-passed"/></a>
+              <button type="button" class="btn btn-info my-3" href="#admin" onclick="toggleDarkMode();"><img width="25" height="25" src="https://img.icons8.com/fluency/48/day-and-night.png" alt="day-and-night"/></button>
+            </div>
+          </div>
+        </nav>
+        <main class="col-sm-11 bg-light pt-5 pb-4">
+          <div class="text-bg-light">
+            <p class="alert alert-danger" id="jsAlert">You don't have JavaScript enabled! This page cannot function without it.</p>
+            <div class="spa-page" id="about">
+              <section>
+                <h3>About</h3>
+                <p>Formonit gives you a free and easy, self-hosted form backend solution that runs in your browser! Just sign up and then embed the following HTML
+                  form in your website. You also get your own contact form URL that you can use if you don't have a website.
+                </p>
+                <p>As long as this Tab is open in your browser, whenever your users submit the form, your Inbox here will be populated.
+                  You will also be notified via Telegram.
+                </p>
+                <h3>Powered by</h3>
+                <ul class="nav nav-pills nav-justified">
+                  <li class="nav-item"><a class="nav-link" href="https://securelay.github.io/">securelay</a></li>
+                  <li class="nav-item"><a class="nav-link" href="https://github.com/nwtgck/piping-server">piping-server</a></li>
+                  <li class="nav-item"><a class="nav-link" href="https://core.telegram.org/bots/api">Telegram Bot</a></li>
+                  <li class="nav-item"><a class="nav-link" href="https://getbootstrap.com/">bootstrap</a></li>
+                  <li class="nav-item"><a class="nav-link" href="https://github.com/zenorocha/clipboard.js">clipboard.js</a></li>
+                  <li class="nav-item"><a class="nav-link" href="https://jsdelivr.com/">jsdelivr</a></li>
+                  <li class="nav-item"><a class="nav-link" href="https://prismjs.com/">prism</a></li>
+                  <li class="nav-item"><a class="nav-link" href="https://www.freeformatter.com/html-formatter.html">freeformatter.com</a></li>
+                  <li class="nav-item"><a class="nav-link" href="https://favicon.io/">favicon.io</a></li>
+                  <li class="nav-item"><a class="nav-link" href="https://github.com/twitter/twemoji/blob/master/assets/svg/1f5e8.svg">twemoji</a></li>
+                  <li class="nav-item"><a class="nav-link" href="https://icons8.com/icons">icons8.com</a></li>
+                </ul>
+              </section>
+            </div>
+            <div class="spa-page" id="forms">
+              <h3>Forms</h3>
+              <details class="my-4" open>
+                <summary><strong>Embeddable snippet</strong></summary>
+                <p>Edit the below snippet as follows and embed in your website.</p>
+                <ol class="list-group list-group-numbered">
+                  <li class="list-group-item list-group-item-success">
+                    Replace <code>XXXXX</code> with <mark id="formActionURL">the form action URL generated upon sign-up</mark>
+                    <button class="clipboard-js-btn" data-clipboard-target="#formActionURL">Copy URL</button>
+                  </li>
+                  <li class="list-group-item list-group-item-info">Replace <code>YYYYY</code> with a unique descriptive string</li>
+                </ol>
+                <pre><code class="language-html" id="formSnippet">&lt;form action=&quot;XXXXX&quot; method=&quot;POST&quot; target=&quot;hidden_iframe&quot;&gt;
     &lt;input type=&quot;hidden&quot; name=&quot;FormID&quot; value=&quot;YYYYY&quot;&gt;
     &lt;input type=&quot;email&quot; name=&quot;Email&quot; placeholder=&quot;Your Email&quot;&gt;
     &lt;input type=&quot;text&quot; name=&quot;Name&quot; placeholder=&quot;Your Name&quot;&gt;
     &lt;input type=&quot;text&quot; name=&quot;Message&quot; placeholder=&quot;Your Message&quot;&gt;
-    &lt;button type=&quot;submit&quot;&gt;Submit&lt;button&gt;
-    &lt;input type=&quot;reset&quot;&gt;Reset&lt;button&gt;
+    &lt;button type=&quot;submit&quot;&gt;Submit&lt;/button&gt;
+    &lt;button type=&quot;reset&quot;&gt;Reset&lt;/button&gt;
 &lt;/form&gt;
 &lt;!-- when the form is submitted, the server response will appear in the following iframe, hidden from view --&gt;
 &lt;iframe name=&quot;hidden_iframe&quot; src=&quot;about:blank&quot; hidden&gt;&lt;/iframe&gt;
 </code></pre>
-							<button class="clipboard-js-btn" data-clipboard-target="#formSnippet">Copy above snippet</button>
-						</details>
-
-
-                        <details class="my-4" open>
-						<summary><strong>Shareable links</strong></summary>
-						<p>Following lists your custom webpages made with love and hosted by Formonit. Numbers on the right represent page views since your last sign-in.</p>
-						<ol class="list-group list-group-numbered">
-							<li class="list-group-item d-flex justify-content-between align-items-start">
-								<div class="ms-2 me-auto">
-									<div class="fw-bold">Profile</div>
-									<a href="#" id="profileLink">https://formonit.github.io/user/</a>
-									<a class="clipboard-js-btn" data-clipboard-target="#profileLink"><img width="24" height="24" src="https://img.icons8.com/material-outlined/24/copy.png" alt="copy"/></a>
-									<a href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example"><img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/qr-code--v1.png" alt="qr-code--v1"/></a>
-									<!-- ToDo: https://getbootstrap.com/docs/5.0/components/modal/ and https://stackoverflow.com/a/68077623 -->
-								</div>
-								<span class="badge bg-primary rounded-pill">14</span>
-							</li>
-							<li class="list-group-item d-flex justify-content-between align-items-start">
-								<div class="ms-2 me-auto">
-									<div class="fw-bold">Anonymous</div>
-									<a href="#">https://formonit.github.io/anon/</a>
-								</div>
-								<span class="badge bg-primary rounded-pill">14</span>
-							</li>
-							<li class="list-group-item d-flex justify-content-between align-items-start">
-								<div class="ms-2 me-auto">
-									<div class="fw-bold">Vehicle sticker</div>
-									<a href="#">https://formonit.github.io/car/</a>
-								</div>
-								<span class="badge bg-primary rounded-pill">14</span>
-							</li>
-						</ol>
-						</details>
-						</div>
-						<div class="spa-page" id="settings">
-                            <section>
-                                <h3>Settings</h3>
-                                <form id="config" onsubmit="config();return false;" target="hidden_iframe">
-                                    <p>Setup in just 2 easy steps.</p>
-
-                                    <label for="TGbotKey" class="form-label">1. Enter your Telegram Bot API Token (available from <a href="https://t.me/botfather">@BotFather</a>):</label>
-                                    <input type="text" id="TGbotKey" class="form-control" autocomplete="on" required>
-                                    <br>
-
-                                    <p>2. Send any text to the Bot. Then, click Fetch Chat ID.</p>
-                                    <button type="button" onclick="fetchChatID();">Fetch Chat ID</button>
-                                    <input type="text" id="chatID" placeholder="Chat ID" disabled required>
-                                    <br><br>
-                                    <button type="submit" class="btn btn-success">Save</button>
-                                </form>
-                            </section>
-                        </div>
-                        <div class="spa-page" id="admin">
-                            <section>
-                                <h3>Admin</h3>
-                                <details class="my-4" open>
-								<summary><strong>Server</strong></summary>
-                                <button type="button" onclick="signout();">Sign out</button>
-								<input type="button" id="toggleServer" value="Kill Server" disabled=true; onclick="toggleWorker();">
-								</details>
-								
-								<details class="my-4" open>
-								<summary><strong>Test</strong></summary>
-                                    <p>Test if everything is working properly with the following sample form. The HTML underlying this form is based on the embeddable snippet shown in <a href="#forms" onClick="spaGoTo('forms');">Forms</a>.</p>
-									<p>3 things should happen when you submit the form.</p>
-									<ol type="1">
-									<li>The below Log will report an entry.</li>
-									<li><a href="#inbox" onClick="spaGoTo('inbox');">Inbox</a> will be populated.</li>
-									<li>You will get the form data as a Telegram message.</li>
-									</ol>
-                                    <form method="POST" target="testForm_iframe" onsubmit="document.getElementsByName('testForm_iframe')[0].style='background:url(https://img.icons8.com/material-outlined/30/spinner-frame-2.png) no-repeat';">
-                                        <input type="hidden" name="From" value="tester">
-                                        <div class="row mt-2">
-                                            <div class="col">
-                                                <input type="email" class="form-control" name="Email" placeholder="Your Email" autocomplete="on" required>
-                                            </div>
-                                            <div class="col">
-                                                <input type="text" class="form-control" name="Name" placeholder="Your Name" autocomplete="on" required>
-                                            </div>
-                                            <div class="mt-2"><input type="text" class="form-control" name="Message" placeholder="Your Message" required></div>
-                                        </div>
-                                        <button type="submit" id="testFormBtn" class="btn btn-success mt-2" disabled>Submit</button>
-                                        <button type="reset" class="btn btn-warning mt-2" onClick="document.getElementsByName('testForm_iframe')[0].src='about:blank';">Reset</button>
-                                        <iframe name="testForm_iframe" height="30" width="30" scrolling="no" src='about:blank' onload="this.removeAttribute('style')"></iframe>
-                                    </form>
-                                </details>
-                                
-                                <details class="my-4" open>
-								<summary><strong>Log</strong></summary>
-                                <button type="button" onclick="spaBottom();">Bottom</button>
-                                <br><br>
-                                <p class="alert alert-success">Only high level logs are shown here. For the more technical low level logs, check console. Reload this window to clear the logs.</p>
-                                <div id="logs" class="text-bg-info"></div>
-                                <br><br>
-                                <button type="button" onclick="spaTop();">Top</button>
-								</details>
-                            </section>
-                        </div>
-                        <div class="spa-page" id="inbox">
-                        <section>
-                            <h3>Inbox</h3>
-                            <div class="alert alert-success">
-							<div class="d-inline-flex w-100 justify-content-between"><p>This is your storageless Inbox. All data is lost once you close or even reload this window.</p><button>Sync Now</button></div>
-                            </div>
-							<p class="alert alert-info"><strong>Protip:</strong> To export to <a href="https://www.microsoft.com/en/microsoft-365/excel">MS Excel</a>, copy the table below, followed by <code>Paste Special > Text</code> in Excel. To export to <a href="https://docs.google.com/spreadsheets/create">Google Sheets</a>, use <code>Paste Special > Values only (Ctrl+Shift+V)</code> instead.</p>
-                            <button class="clipboard-js-btn" data-clipboard-target="#inboxTable">Copy table</button>
-                            <div class="table-responsive">
-                            <table class="table table-hover table-striped">
-                                <thead class="table-dark">
-                                    <tr id="inboxHeader">
-                                        <th>From</th>
-                                        <th>Email</th>
-                                        <th>Name</th>
-                                        <th>Message</th>
-                                        <th>Time</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="inboxTable">
-                                </tbody>
-                            </table>
-                            </div>
-                        </section>
-                        </div>
-
-                        <p class="d-flex justify-content-start"><button type="button" class="btn btn-danger mt-4" onclick="main();" id="login">Let's get started</button></p>
-
-                        <div class="badge bg-warning position-fixed bottom-0 end-0">
-                            AutoSync: <span id="serverStatus">Off</span>
-                        </div>
+                <button class="clipboard-js-btn" data-clipboard-target="#formSnippet">Copy above snippet</button>
+              </details>
+              <details class="my-4" open>
+                <summary><strong>Shareable links</strong></summary>
+                <p>Following lists your custom webpages made with love and hosted by Formonit. Numbers on the right represent page views since your last sign-in.</p>
+                <ol class="list-group list-group-numbered">
+                  <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                      <div class="fw-bold">Profile</div>
+                      <a href="#" id="profileLink">https://formonit.github.io/user/</a>
+                      <a class="clipboard-js-btn" data-clipboard-target="#profileLink"><img width="24" height="24" src="https://img.icons8.com/material-outlined/24/copy.png" alt="copy"/></a>
+                      <a href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example"><img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/qr-code--v1.png" alt="qr-code--v1"/></a>
+                      <!-- ToDo: https://getbootstrap.com/docs/5.0/components/modal/ and https://stackoverflow.com/a/68077623 -->
                     </div>
-                </main>
+                    <span class="badge bg-primary rounded-pill">14</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                      <div class="fw-bold">Anonymous</div>
+                      <a href="#">https://formonit.github.io/anon/</a>
+                    </div>
+                    <span class="badge bg-primary rounded-pill">14</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                      <div class="fw-bold">Vehicle sticker</div>
+                      <a href="#">https://formonit.github.io/car/</a>
+                    </div>
+                    <span class="badge bg-primary rounded-pill">14</span>
+                  </li>
+                </ol>
+              </details>
             </div>
-        </div>
-        <footer class="mt-auto container-fluid p-2 text-bg-dark text-center">
-                        Copyright &copy; 2024 Formonit
-
-        </footer>
-        <dialog id="signIn">
-            <div class="d-flex mb-2">
-                <h5>Sign in</h5>
-                <button type="button" class="btn-close ms-auto" onClick="document.getElementById('signIn').close();"></button>
+            <div class="spa-page" id="settings">
+              <section>
+                <h3>Settings</h3>
+                <button type="button" class="my-4" onclick="signout();">Sign out</button>
+                <details class="my-4" open>
+                  <summary><strong>Telegram</strong></summary>
+                  <form onsubmit="event.preventDefault();TGconfig(this);">
+                    <p>Setup Telegram notificiation in just 2 easy steps.</p>
+                    <label for="TGbotKey" class="form-label">1. Enter your Telegram Bot API Token (available from <a href="https://t.me/botfather">@BotFather</a>):</label>
+                    <input type="text" id="TGbotKey" name="TGbotKey" class="form-control" autocomplete="on" required>
+                    <br>
+                    <p>2. Send any text to the Bot. Then, click Fetch Chat ID.</p>
+                    <button type="button" onclick="fetchChatID(this.parentElement.elements['TGbotKey'].value);">Fetch Chat ID</button>
+                    <input type="text" id="chatID" name="TGchatID" hidden required>
+                    <input type="text" id="chatIDShow" disabled>
+                    <input type="checkbox" name="TGnotify" id="TGnotify" hidden checked>
+                    <label for="TGnotify" hidden>Enable Telegram notification</label>
+                    <br><br>
+                    <button type="submit" class="btn btn-success">Save</button>
+                  </form>
+                </details>
+                <details class="my-4" open>
+                  <summary><strong>Sync</strong></summary>
+                  <button onClick="sync();">Sync Now</button>
+                  <input type="button" id="toggleServer" value="Stop syncing" disabled onclick="toggleWorker();">
+                  <input type="checkbox" id="autoSync" checked onchange="autoSyncToggle();">
+                  <label for="autoSync">Enable automatic syncing</label>
+                </details>
+              </section>
             </div>
-            <form method="dialog">
-            <p>Generate or enter your Formonit Access Key</p>
-            <button type="button" class="btn btn-success me-2" onclick="genUUID();">Generate New Key</button>
-            <input type="text" id="uuid" placeholder="Enter Your Key" required>
-            <div id="keyAlert" class="alert alert-warning my-4">Store this key safely for all future logins. It cannot be recovered, if lost.</div>
-            <input type="checkbox" id="keepSignedIn" name="keepSignedIn" checked>
-            <label for="keepSignedIn" data-bs-toggle="tooltip" title="Uses localStorage for storing session">Keep me signed in</label>
-            <br>
-            <input type="checkbox" id="termsUnderstood" name="termsUnderstood" required>
-            <label for="termsUnderstood">I have read and understood the <a href="ToS.txt">Terms</a> and <a href="PRIVACY.txt">Privacy</a> declarations</label>
-            <br>
-            <button type="submit" class="btn btn-primary mt-2">Sign in</button>
-            <button type="reset" class="btn btn-secondary mt-2">Reset</button>           
-            </form>
-        </dialog>
-        <script defer src="https://cdn.jsdelivr.net/gh/SomajitDey/webtools@0.0.0/spa/spa.min.js"></script>
-        <script defer src="https://cdn.jsdelivr.net/gh/SomajitDey/webtools@0.0.0/prism/prism.min.js"></script>
-		<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
-        <!-- Module type script loading is deferred automatically -->
-        <script type="module" src="app/main.js"></script>
-    </body>
+            <div class="spa-page" id="admin">
+              <section>
+                <h3>Admin</h3>
+                <details class="my-4" open>
+                  <summary><strong>Test</strong></summary>
+                  <p>Test if everything is working properly with the following sample form. The HTML underlying this form is based on the embeddable snippet shown in <a href="#forms" onClick="spaGoTo('forms');">Forms</a>.</p>
+                  <p>3 things should happen when you submit the form.</p>
+                  <ol type="1">
+                    <li>The below Log will report an entry.</li>
+                    <li><a href="#inbox" onClick="spaGoTo('inbox');">Inbox</a> will be populated.</li>
+                    <li>You will get the form data as a Telegram message.</li>
+                  </ol>
+                  <form method="POST" target="testForm_iframe" onsubmit="document.getElementsByName('testForm_iframe')[0].style='background:url(https://img.icons8.com/material-outlined/30/spinner-frame-2.png) no-repeat';">
+                    <input type="hidden" name="From" value="tester">
+                    <div class="row mt-2">
+                      <div class="col">
+                        <input type="email" class="form-control" name="Email" placeholder="Your Email" autocomplete="on" required>
+                      </div>
+                      <div class="col">
+                        <input type="text" class="form-control" name="Name" placeholder="Your Name" autocomplete="on" required>
+                      </div>
+                      <div class="mt-2"><input type="text" class="form-control" name="Message" placeholder="Your Message" required></div>
+                    </div>
+                    <button type="submit" id="testFormBtn" class="btn btn-success mt-2" disabled>Submit</button>
+                    <button type="button" class="btn btn-info mt-2" onclick="this.parentElement.elements['Message'].value='';document.getElementsByName('testForm_iframe')[0].src='about:blank';">New Message</button>
+                    <button type="reset" class="btn btn-warning mt-2" onClick="document.getElementsByName('testForm_iframe')[0].src='about:blank';">Reset</button>
+                    <iframe name="testForm_iframe" height="30" width="30" scrolling="no" src="about:blank" onload="this.removeAttribute('style')"></iframe>
+                  </form>
+                </details>
+                <details class="my-4" open>
+                  <summary><strong>Log</strong></summary>
+                  <button type="button" onclick="spaBottom();">Bottom</button>
+                  <br><br>
+                  <p class="alert alert-success">Only high level logs are shown here. For the more technical low level logs, check console. Reload this window to clear the logs.</p>
+                  <div id="logs" class="text-bg-info"></div>
+                  <br><br>
+                  <button type="button" onclick="spaTop();">Top</button>
+                </details>
+              </section>
+            </div>
+            <div class="spa-page" id="inbox">
+              <section>
+                <h3>Inbox</h3>
+                <div class="alert alert-success">
+                  <div class="d-inline-flex w-100 justify-content-between">
+                    <p>This is your storageless Inbox. All data is lost once you close or even reload this window.</p>
+                    <button onClick="sync();">Sync Now</button>
+                  </div>
+                </div>
+                <p class="alert alert-info"><strong>Protip:</strong> To export to <a href="https://www.microsoft.com/en/microsoft-365/excel">MS Excel</a>, copy the table below, followed by <code>Paste Special &gt; Text</code> in Excel. To export to <a href="https://docs.google.com/spreadsheets/create">Google Sheets</a>, use <code>Paste Special &gt; Values only (Ctrl+Shift+V)</code> instead.</p>
+                <button class="clipboard-js-btn" data-clipboard-target="#inboxTable">Copy table</button>
+                <div class="table-responsive">
+                  <table class="table table-hover table-striped">
+                    <thead class="table-dark">
+                      <tr id="inboxHeader">
+                        <th>From</th>
+                        <th>Email</th>
+                        <th>Name</th>
+                        <th>Message</th>
+                        <th>Time</th>
+                      </tr>
+                    </thead>
+                    <tbody id="inboxTable">
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
+            <p class="d-flex justify-content-start"><button type="button" class="btn btn-danger mt-4" onclick="main();" id="login">Let's get started</button></p>
+            <div class="badge bg-warning position-fixed bottom-0 end-0">
+              Sync: <span id="serverStatus">Off</span>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <footer class="mt-auto container-fluid p-2 text-bg-dark text-center">
+      Copyright &copy; 2024 Formonit
+    </footer>
+    <dialog id="signIn">
+      <div class="d-flex mb-2">
+        <h5>Sign in</h5>
+        <button type="button" class="btn-close ms-auto" onClick="document.getElementById('signIn').close();"></button>
+      </div>
+      <form method="dialog" onsubmit="signIn(this);">
+        <p>Generate or enter your Formonit Access Key</p>
+        <button type="button" class="btn btn-success me-2" onclick="genUUID();">Generate New Key</button>
+        <input type="text" id="uuid" name="appKey" placeholder="Enter Your Key" required>
+        <div id="keyAlert" class="alert alert-warning my-4">Store this key safely for all future logins. It cannot be recovered, if lost.</div>
+        <input type="checkbox" id="keepSignedIn" name="keepSignedIn" checked>
+        <label for="keepSignedIn" data-bs-toggle="tooltip" title="Uses localStorage for storing session">Keep me signed in</label>
+        <br>
+        <input type="checkbox" id="termsUnderstood" name="termsUnderstood" required>
+        <label for="termsUnderstood">I have read and understood the <a href="ToS.txt">Terms</a> and <a href="PRIVACY.txt">Privacy</a> declarations</label>
+        <br>
+        <button type="submit" class="btn btn-primary mt-2">Sign in</button>
+        <button type="reset" class="btn btn-secondary mt-2">Reset</button>           
+      </form>
+    </dialog>
+    <script defer src="https://cdn.jsdelivr.net/gh/SomajitDey/webtools@0.0.0/spa/spa.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/gh/SomajitDey/webtools@0.0.0/prism/prism.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+    <!-- Module type script loading is deferred automatically -->
+    <script type="module" src="app/main.js"></script>
+  </body>
 </html>

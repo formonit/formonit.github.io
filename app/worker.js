@@ -1,67 +1,113 @@
+/* eslint-env worker */
 /*
 Brief: Background worker performing syncing/networking.
 */
 
-async function pollApi(getFrom, postTo, TGchatID) {
-    const pollInterval = 5000; // in milliseconds
+import { sendTG, syncSecurelay, getPipe } from './utils.js';
 
-    const relay = async () => {
-        let data; // This will hold the received URL encoded form data
-        let errLvl = 2; // Default error level when errors are caught. May be overriden before using `throw`.
-        
-        // Listen to piping-server
-        try {
-            const response = await fetch(getFrom); // Make request
+const cache = new Map();
 
-            if (response.status !== 200) {
-                if (response.status === 404) return;
-                errLvl = 1; // Set error to critical/fatal
-                throw `GET @ ${getFrom} status: ${response.status}`;
-            }
-
-            data = await response.text();
-            // Send URL decoded form data as JSON string to main for logging. Also pass an error level.
-            postMessage([data, 0]);
-            
-        } catch (error) {
-            console.error(`${Date()}: Error making GET request -- ${error}`);
-            // Send error to main for logging. Error level: 1 for high priority / fatal.
-            postMessage(['Failed to fetch form data.', errLvl]);
-            return;
-
-        } finally {
-            setTimeout(relay, pollInterval); // Schedule next relay
-        }
-
-        // POST to Telegram
-        let payload = {chat_id: TGchatID, text: data}; // conforming to Telegram API schema
-
-        try {
-            const response = await fetch(postTo, {
-                method: "POST",
-                headers: {'Content-Type': 'application/json'}, 
-                body: JSON.stringify(payload)
-            })
-            
-            if (! response.ok) {
-                throw `POST @ ${postTo} status: ${response.status}. Is chat ID = ${TGchatID} ok?`;
-            }
-
-        } catch (error) {        
-            console.error(`${Date()}: Error making POST request -- ${error}`);
-            // Send error to main for logging. Error level: 2 for low priority / non-fatal.
-            postMessage(['Failed to post form data to Telegram.', errLvl]);
-            return;
-        }
-
-        console.log(`${Date()}: Relay complete.`);
-    };
-
-    relay(); // Start the first relay
+/*
+Brief: Run a webhook server by polling piping-server. Collects only one POST request at a time.
+*/
+function pollPipe (callback, errHandler, pollInterval = 0, timeout = null) {
+  const path = (cache.get('webhook')).split('/').pop();
+  getPipe(path, timeout)
+    .then((dataObj) => { console.log(dataObj); callback(dataObj); })
+    .catch((err) => {
+      err.cause = 'piping-server';
+      errHandler(err);
+    })
+    .finally(() => {
+      // `arguments` object below contains arguments of the non-arrow function pollPipe that encloses this scope
+      if (pollInterval !== null && cache.get('autoSync')) cache.set('pollPipeTimeout', setTimeout(() => pollPipe(...arguments), pollInterval));
+    });
 }
 
-// Register pollApi has handler for the event of receiving any message from main
-onmessage = (e) => {
-  console.log("Message received from main script: " + JSON.stringify(e.data));
-  pollApi(e.data[0], e.data[1], e.data[2]);
-};
+function pollSecurelay (callback, errHandler, pollInterval = 3600000, timeout = 10000) {
+  syncSecurelay(cache.get('appKey'), cache.get('webhook'), timeout)
+    .then((dataObj) => callback(dataObj))
+    .catch((err) => {
+      err.cause = 'securelay';
+      errHandler(err);
+    })
+    .finally(() => {
+      // `arguments` object below contains arguments of the non-arrow function pollSecurelay that encloses this scope
+      if (pollInterval !== null && cache.get('autoSync')) cache.set('pollSecurelayTimeout', setTimeout(() => pollSecurelay(...arguments), pollInterval));
+    });
+}
+
+function processData (dataObj) {
+  const TGnotify = cache.get('TGnotify');
+  const TGbotKey = cache.get('TGbotKey');
+  const TGchatID = cache.get('TGchatID');
+  if (TGnotify && TGbotKey && TGchatID) {
+    sendTG(TGbotKey, TGchatID, JSON.stringify(dataObj))
+      .catch((err) => {
+        err.cause = 'sendTG';
+        processError(err);
+      });
+  }
+  let dataObjArray;
+  if (Array.isArray(dataObj)) {
+    dataObjArray = dataObj;
+  } else {
+    dataObjArray = [dataObj];
+  }
+  self.postMessage({ msg: dataObjArray, errlvl: 0, err: null });
+}
+
+function processError (err) {
+  console.error(err);
+  if (err.message.toLowerCase().includes('timeout') || (err.message == 404)) {
+    self.postMessage({ msg: `Warning: Error during fetch from ${err.cause}.`, errlvl: 1, err });
+  } else if (err.cause === 'sendTG') {
+    self.postMessage({ msg: 'Warning: Error during post to Telegram.', errlvl: 1, err });
+  } else {
+    self.postMessage({ msg: `Fatal: Error during fetch from ${err.cause}.`, errlvl: 2, err });
+  }
+}
+
+function handler (msgObj) {
+  console.log('Message received from main script: ' + JSON.stringify(msgObj));
+  const cmd = msgObj.cmd;
+  const data = msgObj.data;
+
+  switch (cmd) {
+    case 'cache':
+      for (const prop in data) {
+        cache.set(prop, data[prop]);
+      }
+      // For a unique string, choose the first block of hex chars from a v4 UUID
+      cache.set('webhook', `https://ppng.io/${crypto.randomUUID().split('-')[0]}`);
+      break;
+    case 'launch':
+      pollSecurelay(processData, processError);
+      pollPipe(processData, processError);
+      break;
+    case 'autoSyncOn':
+      if (!cache.get('autoSync')) {
+        pollSecurelay(processData, processError);
+        pollPipe(processData, processError);
+        cache.set('autoSync', 'on');
+      }
+      break;
+    case 'autoSyncOff':
+      if (cache.get('autoSync')) {
+        clearTimeout(cache.get('pollSecurelayTimeout'));
+        clearTimeout(cache.get('pollPipeTimeout'));
+        cache.delete('autoSync');
+      }
+      break;
+    case 'syncNow':
+      pollSecurelay(processData, processError, null);
+      break;
+    default:
+      const err = new Error('Command not found');
+      err.cause = 'handler';
+      processError(err);
+  }
+}
+
+// Register handler for the event of receiving any message from main
+self.onmessage = (e) => handler(e.data);

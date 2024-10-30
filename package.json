@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "lint": "htmlhint *.html && (semistandard --fix >/dev/null ; echo 'line-width > 120:'; ls **/*.js *.html | xargs -I '{}' sh -c 'echo =======; echo File: {}; echo =======; sed -n \"/\\(.\\)\\{120\\}/p\" {}')"
+  }
+}
