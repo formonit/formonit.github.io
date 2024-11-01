@@ -33,29 +33,21 @@ function logThis (report) {
   logs.prepend(row);
 }
 
-// Handler for updating the display of number of unread messages
-window.updateUnreadCount = function updateUnreadCount () {
-  if (spaCurrentPageID === 'inbox') {
-    numReadMsgs = numTotalMsgs;
-  }
-  document.getElementById('unread').innerText = numTotalMsgs - numReadMsgs;
-};
-
 async function inbox (dataArray) {
   const container = document.querySelector('#inbox section');
+  const inboxUnread = document.getElementById('unread');
 
   // Loop over all messages
   for (const data of dataArray) {
     const origin = data.FormID ?? 'NA';
 
-    // Prepare table header
     const keysArray = Object.keys(data);
     const category = await utils.hash(JSON.stringify(keysArray) + origin);
-
+    // Prepare table header
     if (!document.getElementById(category)) {
       const details = document.createElement('details');
       details.setAttribute('name', 'inboxCategories');
-      details.open = true;
+      details.toggleAttribute('open', false);
       details.classList.add('my-4');
       container.append(details);
 
@@ -94,6 +86,26 @@ async function inbox (dataArray) {
       const tableBody = document.createElement('tbody');
       tableBody.setAttribute('id', category);
       table.append(tableBody);
+
+      details.addEventListener('toggle', (event) => {
+        if (details.open) {
+          /* the element was toggled open */
+          // Update unread message count
+          const categoryUnread = summary.getElementsByClassName('badge')[0];
+          inboxUnread.innerText = parseInt(inboxUnread.innerText) - parseInt(categoryUnread.innerText);
+          categoryUnread.innerText = 0;
+          categoryUnread.toggleAttribute('hidden', true);
+        } else {
+          /* the element was toggled closed */
+          const rowList = tableBody.getElementsByTagName('tr');
+          // Unaccentuate old messages
+          for (let i = 1; i <= rowList.length; i++) {
+            // Looping from bottom [rowList.length - i] to avoid unaccentuating new incoming messages
+            // rowList.length is live, hence not assigned to const
+            rowList[rowList.length - i].classList.remove('table-primary');
+          }
+        }
+      });
     }
 
     // Create table row:
@@ -114,9 +126,16 @@ async function inbox (dataArray) {
     // Append row to table body:
     document.getElementById(category).prepend(row);
 
-    // Update number of total messages
-    ++numTotalMsgs;
-    updateUnreadCount('new');
+    // Accentuate row as new
+    row.className = 'table-primary';
+
+    // Update unread message count
+    if (!row.checkVisibility()) {
+      inboxUnread.innerText = parseInt(inboxUnread.innerText) + 1;
+      const categoryUnread =  document.getElementById(`${category}Unread`);
+      categoryUnread.innerText = parseInt(categoryUnread.innerText) + 1;
+      categoryUnread.toggleAttribute('hidden', false);
+    }
   }
 }
 
@@ -289,7 +308,7 @@ window.signIn = async function signIn (callerForm) {
 window.TGconfig = function TGconfig (callerForm) {
   const submitterBtn = callerForm.getElementsByTagName('button')[1];
   submitterBtn.replaceChildren('Saving...');
-  setTimeout(() => {submitterBtn.replaceChildren('Save'); callerForm.reset()}, 2000);
+  setTimeout(() => { submitterBtn.replaceChildren('Save'); callerForm.reset(); }, 2000);
   const formData = new FormData(callerForm);
   const dataObj = {};
   for (const [key, val] of formData.entries()) {
