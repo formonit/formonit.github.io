@@ -287,6 +287,9 @@ window.signIn = async function signIn (callerForm) {
 };
 
 window.TGconfig = function TGconfig (callerForm) {
+  const submitterBtn = callerForm.getElementsByTagName('button')[1];
+  submitterBtn.replaceChildren('Saving...');
+  setTimeout(() => {submitterBtn.replaceChildren('Save'); callerForm.reset()}, 2000);
   const formData = new FormData(callerForm);
   const dataObj = {};
   for (const [key, val] of formData.entries()) {
@@ -295,7 +298,7 @@ window.TGconfig = function TGconfig (callerForm) {
     cache.setItem(key, val);
   }
   if (myWorker) myWorker.postMessage({ cmd: 'cache', data: dataObj });
-  callerForm.reset();
+  submitterBtn.replaceChildren('Saved');
 };
 
 window.togglePasswordVisibility = function (elementID) {
