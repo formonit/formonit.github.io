@@ -173,7 +173,7 @@
                     <li>You will get the form data as a Telegram message.</li>
                   </ol>
                   <form method="POST" target="testForm_iframe" onsubmit="document.getElementsByName('testForm_iframe')[0].style='background:url(https://img.icons8.com/material-outlined/30/spinner-frame-2.png) no-repeat';">
-                    <input type="hidden" name="From" value="tester">
+                    <input type="hidden" name="FormID" value="tester">
                     <div class="row mt-2">
                       <div class="col">
                         <input type="email" class="form-control" name="Email" placeholder="Your Email" autocomplete="on" required>
@@ -210,22 +210,6 @@
                   </div>
                 </div>
                 <p class="alert alert-info"><strong>Protip:</strong> To export to <a href="https://www.microsoft.com/en/microsoft-365/excel">MS Excel</a>, copy the table below, followed by <code>Paste Special &gt; Text</code> in Excel. To export to <a href="https://docs.google.com/spreadsheets/create">Google Sheets</a>, use <code>Paste Special &gt; Values only (Ctrl+Shift+V)</code> instead.</p>
-                <button class="clipboard-js-btn" data-clipboard-target="#inboxTable">Copy table</button>
-                <div class="table-responsive">
-                  <table class="table table-hover table-striped">
-                    <thead class="table-dark">
-                      <tr id="inboxHeader">
-                        <th>From</th>
-                        <th>Email</th>
-                        <th>Name</th>
-                        <th>Message</th>
-                        <th>Time</th>
-                      </tr>
-                    </thead>
-                    <tbody id="inboxTable">
-                    </tbody>
-                  </table>
-                </div>
               </section>
             </div>
             <p class="d-flex justify-content-start"><button type="button" class="btn btn-danger mt-4" onclick="main();" id="login">Let's get started</button></p>

@@ -41,48 +41,78 @@ window.updateUnreadCount = function updateUnreadCount () {
   document.getElementById('unread').innerText = numTotalMsgs - numReadMsgs;
 };
 
-function inbox (dataArray) {
-  for (const data of dataArray) {
-    if (data.From === 'FormonitViewCounter') {
-      let viewCount = cache.getItem('FormonitViewCounter');
-      ++viewCount;
-      document.getElementById('FormonitViewCounter').innerText = `which has ${viewCount} views`;
-      cache.setItem('FormonitViewCounter', viewCount);
-      continue;
-    }
+async function inbox (dataArray) {
+  const container = document.querySelector('#inbox section');
 
-    data.Timestamp = Date();
+  // Loop over all messages
+  for (const data of dataArray) {
+    const origin = data.FormID ?? 'NA';
+
+    // Prepare table header
+    const keysArray = Object.keys(data);
+    const category = await utils.hash(JSON.stringify(keysArray) + origin);
+
+    if (!document.getElementById(category)) {
+      const details = document.createElement('details');
+      details.setAttribute('name', 'inboxCategories');
+      details.open = true;
+      details.classList.add('my-4');
+      container.append(details);
+
+      const summary = document.createElement('summary');
+      details.append(summary);
+      summary.classList.add('d-flex', 'justify-content-between', 'alert', 'alert-warning');
+      summary.innerHTML = `<span><strong>FormID:</strong> ${origin}</span>
+      <span class="badge bg-primary rounded-pill" id="${category}Unread" hidden>0</span>`;
+
+      const copyBtn = document.createElement('button');
+      copyBtn.append('Copy table');
+      copyBtn.classList.add('clipboard-js-btn', 'my-4');
+      copyBtn.setAttribute('data-clipboard-target', `#${category}`);
+      details.append(copyBtn);
+
+      const div = document.createElement('div');
+      div.classList.add('table-responsive');
+      details.append(div);
+
+      const table = document.createElement('table');
+      table.classList.add('table', 'table-hover', 'table-striped');
+      div.append(table);
+
+      const tableHead = document.createElement('thead');
+      tableHead.classList.add('table-dark');
+      table.append(tableHead);
+      const header = document.createElement('tr');
+      tableHead.append(header);
+
+      keysArray.forEach((key) => {
+        const cell = document.createElement('th');
+        header.append(cell);
+        cell.append(key);
+      });
+
+      const tableBody = document.createElement('tbody');
+      tableBody.setAttribute('id', category);
+      table.append(tableBody);
+    }
 
     // Create table row:
     const row = document.createElement('tr');
 
-    const header = document.getElementById('inboxHeader');
-    if (!numTotalMsgs) { header.replaceChildren(); }
-
+    // Loop over fields of a single message
     for (const key in data) {
       // Create cell:
       const cell = document.createElement('td');
 
-      // Create a text entry:
-      const entry = data[key];
-
-      // Append entry to cell:
-      cell.append(entry);
-
       // Append cell to row:
       row.append(cell);
 
-      if (!numTotalMsgs) {
-        // Setup header according to the form fields. This is necessary as users may have custom form fields.
-        // Create header block:
-        const header_block = document.createElement('th');
-        header_block.append(key);
-        header.append(header_block);
-      }
+      // Append entry to cell:
+      cell.append(data[key]);
     }
 
     // Append row to table body:
-    document.getElementById('inboxTable').prepend(row);
+    document.getElementById(category).prepend(row);
 
     // Update number of total messages
     ++numTotalMsgs;
@@ -269,13 +299,13 @@ window.TGconfig = function TGconfig (callerForm) {
 };
 
 window.togglePasswordVisibility = function (elementID) {
-  var input = document.getElementById(elementID);
-  if (input.type === "password") {
-    input.type = "text";
+  const input = document.getElementById(elementID);
+  if (input.type === 'password') {
+    input.type = 'text';
   } else {
-    input.type = "password";
+    input.type = 'password';
   }
-}
+};
 
 window.main = function main () {
   // Enable sign-in if no prior cache found in localStorage or sessionStorage

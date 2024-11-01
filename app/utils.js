@@ -5,6 +5,18 @@ Brief: Helper utilities.
 import securelayEndpoint, * as securelay from 'https://cdn.jsdelivr.net/gh/securelay/api@main/script.js';
 
 /*
+Brief: Hex representation of SHA-256 hash of the given string.
+*/
+export async function hash (string) {
+  const msgUint8 = new TextEncoder().encode(string); // encode as (utf-8) Uint8Array
+  const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgUint8); // hash the message
+  const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
+  return hashArray
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join(''); // convert bytes to hex string
+}
+
+/*
 Brief: Convert URL or Percent-encoded string to JSON string.
 */
 export function urlEncoded2Json (str) {
@@ -66,7 +78,7 @@ export async function syncSecurelay (key, webhook = null, timeout = 5000) {
 }
 
 export async function keySecurelay (timeout = 5000) {
-  const [ _, endpointID ] = await securelayEndpoint();
+  const [_, endpointID] = await securelayEndpoint();
   const privateKey = await securelay.key(endpointID, timeout);
   return `${privateKey}@${endpointID}`;
 }
