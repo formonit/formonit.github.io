@@ -175,6 +175,7 @@
                   </ol>
                   <form method="POST" target="testForm_iframe" onsubmit="document.getElementsByName('testForm_iframe')[0].style='background:url(https://img.icons8.com/material-outlined/30/spinner-frame-2.png) no-repeat';">
                     <input type="hidden" name="FormID" value="tester">
+                    <input type="hidden" name="ChatID" id="testFormChatID">
                     <div class="row mt-2">
                       <div class="col">
                         <input type="email" class="form-control" name="Email" placeholder="Your Email" autocomplete="on" required>
@@ -189,6 +190,11 @@
                     <button type="reset" class="btn btn-warning mt-2" onClick="document.getElementsByName('testForm_iframe')[0].src='about:blank';">Reset</button>
                     <iframe name="testForm_iframe" height="30" width="30" scrolling="no" src="about:blank" onload="this.removeAttribute('style')"></iframe>
                   </form>
+                  <div>
+                    <p class="my-4"><strong>Reply:</strong></p>
+                    <p class="my-2"></p>                    
+                    <button type="button" class="my-4" onclick="loadReply(this);">Check for new reply</button>
+                  </div>
                 </details>
                 <details class="my-4" open>
                   <summary><strong>Log</strong></summary>
@@ -229,7 +235,7 @@
         <h5>Sign in</h5>
         <button type="button" class="btn-close ms-auto" onClick="document.getElementById('signIn').close();"></button>
       </div>
-      <form method="dialog" onsubmit="signIn(this);">
+      <form method="dialog" onsubmit="event.preventDefault(); signIn(this)">
         <p>Generate or enter your Formonit Access Key</p>
         <button type="button" class="btn btn-success me-2" onclick="genUUID();">Generate New Key</button>
         <input type="password" id="uuid" name="appKey" placeholder="Enter Your Key" required>
@@ -247,6 +253,20 @@
         <button type="reset" class="btn btn-secondary mt-2">Reset</button>           
       </form>
     </dialog>
+
+    <dialog id="reply">
+      <div class="d-flex mb-2">
+        <h5>Reply</h5>
+        <button type="button" class="btn-close ms-auto" onClick="document.getElementById('reply').close();"></button>
+      </div>
+      <form method="POST" target="replyForm_iframe" onsubmit="this.getElementsByTagName('iframe')[0].style='background:url(https://img.icons8.com/material-outlined/30/spinner-frame-2.png) no-repeat';">
+        <textarea name="Message" class="form-control"></textarea>
+        <button type="submit" class="btn btn-primary mt-2">Post</button>
+        <button type="reset" class="btn btn-secondary mt-2" onClick="document.getElementsByName('replyForm_iframe')[0].src='about:blank';">Reset</button>
+        <iframe name="replyForm_iframe" height="30" width="30" scrolling="no" src="about:blank" onload="this.removeAttribute('style')"></iframe>
+      </form>
+    </dialog>
+
     <script defer src="https://cdn.jsdelivr.net/gh/SomajitDey/webtools@0.0.0/spa/spa.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/gh/SomajitDey/webtools@0.0.0/prism/prism.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>

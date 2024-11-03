@@ -3,7 +3,7 @@
 Brief: Background worker performing syncing/networking.
 */
 
-import { sendTG, syncSecurelay, getPipe } from './utils.js';
+import { sendTG, syncSecurelay, getPipe, randHexString } from './utils.js';
 
 const cache = new Map();
 
@@ -79,7 +79,7 @@ function handler (msgObj) {
         cache.set(prop, data[prop]);
       }
       // For a unique string, choose the first block of hex chars from a v4 UUID
-      cache.set('webhook', `https://ppng.io/${crypto.randomUUID().split('-')[0]}`);
+      cache.set('webhook', `https://ppng.io/${randHexString()}`);
       break;
     case 'launch':
       pollSecurelay(processData, processError);

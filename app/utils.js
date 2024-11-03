@@ -2,18 +2,40 @@
 Brief: Helper utilities.
 */
 
-import securelayEndpoint, * as securelay from 'https://cdn.jsdelivr.net/gh/securelay/api@main/script.js';
+import securelayEndpoint, * as securelay from 'https://cdn.jsdelivr.net/gh/securelay/api@v0.0.1/script.js';
+
+/*
+Brief: Returns the first block of hex chars from a v4 UUID as a unique string
+*/
+export function randHexString () {
+  return crypto.randomUUID().split('-')[0];
+}
 
 /*
 Brief: Hex representation of SHA-256 hash of the given string.
 */
-export async function hash (string) {
+export async function hash (string, enc='base64url', len) {
   const msgUint8 = new TextEncoder().encode(string); // encode as (utf-8) Uint8Array
   const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgUint8); // hash the message
-  const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
-  return hashArray
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join(''); // convert bytes to hex string
+  const hashArray = new Uint8Array(hashBuffer); // convert buffer to byte array
+  switch (enc) {
+    case 'base64url':
+      return btoa(String.fromCharCode(...hashArray))
+        .replace(/\+/g,'_')
+        .replace(/\//g,'-')
+        .replace(/=+$/,'')
+        .slice(0,len);
+      break;
+    case 'hex':
+      const byteArray = Array.from(hashArray); // convert buffer to byte array
+      return byteArray
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join('') // convert bytes to hex string
+        .slice(0,len);
+      break;
+    default:
+      return false;
+  }
 }
 
 /*
@@ -72,7 +94,6 @@ Arg: Key is string of the format `<privateKey>@<endpointID>`. Optionally provide
 Error: Throws status code of the response when promise is rejected.
 */
 export async function syncSecurelay (key, webhook = null, timeout = 5000) {
-  console.log(key);
   const [privateKey, endpointID] = key.split('@');
   return securelay.sync(privateKey, endpointID, webhook, timeout);
 }
@@ -81,6 +102,11 @@ export async function keySecurelay (timeout = 5000) {
   const [_, endpointID] = await securelayEndpoint();
   const privateKey = await securelay.key(endpointID, timeout);
   return `${privateKey}@${endpointID}`;
+}
+
+export async function privateUrlSecurelay (key, timeout = 5000) {
+  const [privateKey, endpointID] = key.split('@');
+  return securelay.privateUrl(privateKey, endpointID, timeout);
 }
 
 export async function publicUrlSecurelay (key, timeout = 5000) {

@@ -9,9 +9,6 @@ const crossImgURL = 'https://img.icons8.com/emoji/30/cross-mark-emoji.png';
 let myWorker = null;
 let cache = null;
 
-let numReadMsgs = 0;
-let numTotalMsgs = 0;
-
 window.toggleDarkMode = function toggleDarkMode () {
   const rootElement = document.documentElement;
   const mainElement = document.querySelector('main > div');
@@ -40,9 +37,13 @@ async function inbox (dataArray) {
   // Loop over all messages
   for (const data of dataArray) {
     const origin = data.FormID ?? 'NA';
+    const chatID = data.ChatID;
+    if (chatID) delete data.ChatID;
 
     const keysArray = Object.keys(data);
+    keysArray.push('Reply');
     const category = await utils.hash(JSON.stringify(keysArray) + origin);
+
     // Prepare table header
     if (!document.getElementById(category)) {
       const details = document.createElement('details');
@@ -123,6 +124,11 @@ async function inbox (dataArray) {
       cell.append(data[key]);
     }
 
+    const cell = document.createElement('td');
+    row.append(cell);
+    cell.innerHTML = `<button onclick="reply('${chatID}');">Reply</button>`;
+    cell.getElementsByTagName('button')[0].toggleAttribute('disabled', !chatID);
+
     // Append row to table body:
     document.getElementById(category).prepend(row);
 
@@ -132,10 +138,33 @@ async function inbox (dataArray) {
     // Update unread message count
     if (!row.checkVisibility()) {
       inboxUnread.innerText = parseInt(inboxUnread.innerText) + 1;
-      const categoryUnread =  document.getElementById(`${category}Unread`);
+      const categoryUnread = document.getElementById(`${category}Unread`);
       categoryUnread.innerText = parseInt(categoryUnread.innerText) + 1;
       categoryUnread.toggleAttribute('hidden', false);
     }
+  }
+}
+
+window.reply = async function reply (chatID) {
+  logThis(`Replying to ${chatID}`);
+  const url = await utils.privateUrlSecurelay(cache.getItem('appKey'));
+  const replyDialog = document.getElementById('reply');
+  const query = `?ok=${encodeURIComponent(checkImgURL)}&err=${encodeURIComponent(crossImgURL)}`;
+  replyDialog.getElementsByTagName('form')[0].setAttribute('action', `${url}/${cache.getItem('testFormChatID')}${query}`);
+  replyDialog.showModal();
+};
+
+window.loadReply = async function loadReply (callingBtn) {
+  try {
+    const reply = await fetch(cache.getItem('formActionURL') + '/' + cache.getItem('testFormChatID'))
+      .then((response) => {
+        if (!response.ok) throw new Error(response.status);
+        return response.json();
+      })
+      .then((data) => data['Message']);
+    callingBtn.previousElementSibling.innerText = reply;
+  } catch (err) {
+    callingBtn.previousElementSibling.innerText = 'Found none';
   }
 }
 
@@ -244,6 +273,7 @@ window.startWorker = function startWorker () {
   document.getElementById('formActionURL').innerText = formActionURL;
   // document.getElementById("readyForm").href = `./${btoa(formActionURL).replace(/\+/g,'_').replace(/\//g,'-').replace(/=+$/,'')}`;
   const query = `?ok=${encodeURIComponent(checkImgURL)}&err=${encodeURIComponent(crossImgURL)}`;
+  document.getElementById('testFormChatID').value = cache.getItem('testFormChatID');
   document.getElementById('testFormBtn').setAttribute('formaction', formActionURL + query);
   document.getElementById('testFormBtn').disabled = false;
 };
@@ -280,26 +310,28 @@ window.signout = function signout () {
 window.signIn = async function signIn (callerForm) {
   const data = new FormData(callerForm);
   const appKey = data.get('appKey');
-  if (data.get('keepSignedIn') === 'on') {
-    cache = localStorage;
-  } else {
-    cache = sessionStorage;
-  }
   try {
     const formActionURL = await utils.publicUrlSecurelay(appKey);
+    if (data.get('keepSignedIn') === 'on') {
+      cache = localStorage;
+    } else {
+      cache = sessionStorage;
+    }
+    const testFormChatID = await utils.hash(appKey, 'base64url', 5);
     cache.setItem('appKey', appKey);
     cache.setItem('formActionURL', formActionURL);
+    cache.setItem('testFormChatID', testFormChatID);
     cache.setItem('signed', 'in');
-    spaHide('login');
     logThis('Sign-in successful');
     autoSyncToggle();
-    startWorker();
+    callerForm.submit();
+    main();
   } catch (err) {
     console.error(err);
     if (err.message == 404) {
-      alert('Provided key is wrong!');
+      callerForm.getElementsByClassName('alert')[0].innerText = 'Provided key is wrong!';
     } else {
-      alert('Some error occurred!');
+      callerForm.getElementsByClassName('alert')[0].innerText = 'Some error occurred!';
     }
     return false;
   }
