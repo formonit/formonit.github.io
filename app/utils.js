@@ -17,7 +17,7 @@ Brief: Hex representation of SHA-256 hash of the given string.
 export async function hash (string, enc='base64url', len) {
   const msgUint8 = new TextEncoder().encode(string); // encode as (utf-8) Uint8Array
   const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgUint8); // hash the message
-  const hashArray = new Uint8Array(hashBuffer); // convert buffer to byte array
+  const hashArray = new Uint8Array(hashBuffer); // convert buffer to typed array
   switch (enc) {
     case 'base64url':
       return btoa(String.fromCharCode(...hashArray))
