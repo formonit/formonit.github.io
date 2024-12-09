@@ -220,6 +220,20 @@ window.autoSyncToggle = function autoSyncToggle () {
   }
 };
 
+function renderForms () {
+  const formActionURL = cache.getItem('formActionURL');
+  const appKey = cache.getItem('appKey');
+  const publicKey = formActionURL.split('/').pop() + '@' + appKey.split('@').pop();
+  logThis('Public key = ' + publicKey);
+  document.getElementById('formActionURL').innerText = formActionURL;
+  // document.getElementById("readyForm").href = `./${btoa(formActionURL).replace(/\+/g,'_').replace(/\//g,'-').replace(/=+$/,'')}`;
+  const query = `?ok=${encodeURIComponent(checkImgURL)}&err=${encodeURIComponent(crossImgURL)}`;
+  document.getElementById('testFormChatID').value = cache.getItem('testFormChatID');
+  document.getElementById('testFormBtn').setAttribute('formaction', formActionURL + query);
+  document.getElementById('testFormBtn').disabled = false;
+
+};
+
 window.startWorker = function startWorker () {
   if (myWorker) {
     return;
@@ -268,14 +282,7 @@ window.startWorker = function startWorker () {
   logThis('Started sync');
   updateSyncStatusBadge();
 
-  const formActionURL = cache.getItem('formActionURL');
-  logThis('Public key = ' + formActionURL);
-  document.getElementById('formActionURL').innerText = formActionURL;
-  // document.getElementById("readyForm").href = `./${btoa(formActionURL).replace(/\+/g,'_').replace(/\//g,'-').replace(/=+$/,'')}`;
-  const query = `?ok=${encodeURIComponent(checkImgURL)}&err=${encodeURIComponent(crossImgURL)}`;
-  document.getElementById('testFormChatID').value = cache.getItem('testFormChatID');
-  document.getElementById('testFormBtn').setAttribute('formaction', formActionURL + query);
-  document.getElementById('testFormBtn').disabled = false;
+  renderForms();
 };
 
 window.stopWorker = function stopWorker () {
