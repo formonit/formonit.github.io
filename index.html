@@ -37,7 +37,6 @@
             <div class="d-flex flex-column min-vh-100 justify-content-start align-items-center py-3">
               <a class="btn btn-info my-3" href="#inbox" onclick="spaGoTo('inbox');">Inbox<br><span id ="unread" class="badge bg-danger">0</span></a>
               <a class="btn btn-info my-3" href="#forms" onclick="spaGoTo('forms');">Forms</a>
-              <a class="btn btn-info my-3" href="#chats" onclick="spaGoTo('chats');">Chats</a>
               <a class="btn btn-info my-3" href="#settings" onclick="spaGoTo('settings');"><img width="25" height="25" src="https://img.icons8.com/3d-fluency/50/gear--v1.png" alt="gear--v1"/></a>
               <a class="btn btn-info my-3" href="#admin" onclick="spaGoTo('admin');"><img width="25" height="25" src="https://img.icons8.com/3d-fluency/50/test-passed.png" alt="test-passed"/></a>
               <button type="button" class="btn btn-info my-3" href="#admin" onclick="toggleDarkMode();"><img width="25" height="25" src="https://img.icons8.com/fluency/48/day-and-night.png" alt="day-and-night"/></button>
@@ -50,13 +49,61 @@
             <div class="spa-page" id="about">
               <section>
                 <h3>About</h3>
-                <p>Formonit gives you a free and easy, self-hosted form backend solution that runs in your browser! Just sign up and then embed the following HTML
-                  form in your website. You also get your own contact form URL that you can use if you don't have a website.
+                <p>
+                  'Formonit' is a portmanteau of 'Form(s)' and 'Monitor'.
+                  But you can also take it literally, as a platform to form your digital presence on.
+                  Basically, we aspire to give you a free and easy, feature-rich, form-backend solution for all your static websites.
                 </p>
-                <p>As long as this Tab is open in your browser, whenever your users submit the form, your Inbox here will be populated.
-                  You will also be notified via Telegram.
+                <p>You can simply use the generated action URL in your HTML forms.</p>
+                <p>Simpler even is to embed our form snippet in your website's HTML.</p>
+                <p>If you don't require custom forms, then the simplest option is to direct your users
+                  (clients/customers/followers) to the contact-page(s) we generate and host for you for free!</p>
+                <p>
+                  All these options will be available in the Forms section upon sign up.
+                  Once your users submit the form(s), your Inbox here will be populated.
+                  If you setup Telegram integration, you will also be notified on TG.
                 </p>
-                <h3>Powered by</h3>
+                <p>There are a few tradeoffs for availing this service free of cost &#128513;:</p>
+                <ol>
+                <li>You have to be online atleast once everyday to sync/collect your users' messages, if any. That's because we only store your data upto a day if you are offline</li>
+                <li>Once you sync the data, it is your responsibility to store it somewhere safe, if need be. Synced data is lost upon page-refresh</li>
+                <li>We only support forms where all the values are texts. Form data needs to be less than 10KiB in size and posted as 'application/x-www-form-urlencoded'</li>
+                </ol>
+                
+                <h3>Features</h3>
+                Exsiting features are coded <strong style="color:green">green</strong>.
+                Upcoming ones <strong style="color:blue">blue</strong>.
+                And sunsetting/deprecated ones <strong style="color:red">red</strong>.
+                Implementation of some of the blue-coded features are subject to <a href="https://github.com/formonit/formonit.github.io/discussions">demand/popular-requests</a> and <a href="https://buymeacoffee.com/somajitdey">support</a>.
+                <ol>
+                <li><strong style="color:green">This website is an <a href="https://developer.mozilla.org/en-US/docs/Glossary/SPA">SPA</a> running client-side, i.e. on your browser.
+                So, you are self-hosting your form-backend!</strong></li>
+                <li><strong style="color:green">Being a <a href="https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps">PWA</a>, can be installed on any platform having a standard web-browser</strong></li>
+                <li><strong style="color:green">Same submission (action) URL for all your forms. Inbox differentiates forms based on their unique FormID parameter</strong></li>
+                <li><strong style="color:green">Readily shareable contact-pages for different use cases along with their view counts</strong></li>
+                <li><strong style="color:green">Option to directly reply to the users who message you</strong></li>
+                <li><strong style="color:green">Telegram integration</strong></li>
+                <li><strong style="color:green">Copy button in Inbox to copy your users' details and messages to MS Excel or Google Sheets</strong></li>
+                <li><strong style="color:green">Sync messages on-demand or automatically. Or turn-off sync as you copy from Inbox etc.</strong></li>
+                <li><strong style="color:green">A dedicated section for testing everything is working as desired</strong></li>
+                <li><strong style="color:green">High-level logs for non-develeopers</strong></li>
+                <li><strong style="color:blue">Readily shareable profile-page, hosted for free, containing your brief bio, avatar and links to your socials and website as well as a contact-form. This can serve as your own website, if you don't have one</strong></li>
+                <li><strong style="color:blue">Option to hide details of the users who contact/message you from middlemen, through end-to-end encryption. The hosted contact-pages have E2E built-in</strong></li>
+                <li><strong style="color:blue">Full-fledged chatbox logging all your 2-way conversations in one place</strong></li>
+                <li><strong style="color:blue">2 factor authentication for sign-in based on password and OTP sent to email</strong></li>
+                <li><strong style="color:blue">Sign-in and data storage using your free GitHub account</strong></li>
+                <li><strong style="color:blue">Comments hosting backend for your static blogging sites.</strong></li>
+                <li><strong style="color:blue">Premium plans with better (rate/size/time/type) limits (compared to the free plan)</strong></li>
+                </ol>
+                
+                <h3>Appeal</h3>
+                If you find this project useful and would like to see it mature, <a href="https://buymeacoffee.com/somajitdey">consider donating towards its survival</a>.
+                No support is too small.
+                Feel free to comment and provide your feedback, request features or report bugs <a href="https://github.com/formonit/formonit.github.io/discussions">here</a>.
+                Thank you &#128154;
+                <br><br>
+                <h3>Acknowledgements</h3>
+                Formonit is powered by these 3rd party services/software:
                 <ul class="nav nav-pills nav-justified">
                   <li class="nav-item"><a class="nav-link" href="https://securelay.github.io/">securelay</a></li>
                   <li class="nav-item"><a class="nav-link" href="https://github.com/nwtgck/piping-server">piping-server</a></li>
@@ -69,6 +116,7 @@
                   <li class="nav-item"><a class="nav-link" href="https://favicon.io/">favicon.io</a></li>
                   <li class="nav-item"><a class="nav-link" href="https://github.com/twitter/twemoji/blob/master/assets/svg/1f5e8.svg">twemoji</a></li>
                   <li class="nav-item"><a class="nav-link" href="https://icons8.com/icons">icons8.com</a></li>
+                  <li class="nav-item"><a class="nav-link" href="https://goqr.me/">goQR.me</a></li>
                 </ul>
               </section>
             </div>
@@ -100,28 +148,23 @@
               <details class="my-4" open>
                 <summary><strong>Shareable links</strong></summary>
                 <p>Following lists your custom webpages made with &#x2764;&#xfe0f; and hosted by Formonit. Numbers on the right represent page views since your last sign-in.</p>
+                <!-- ToDo: https://getbootstrap.com/docs/5.0/components/modal/ and https://stackoverflow.com/a/68077623 -->
                 <ol class="list-group list-group-numbered">
                   <li class="list-group-item d-flex justify-content-between align-items-start">
                     <div class="ms-2 me-auto">
-                      <div class="fw-bold">Profile</div>
-                      <a href="#" id="profileLink">https://formonit.github.io/user/</a>
-                      <a class="clipboard-js-btn" data-clipboard-target="#profileLink"><img width="24" height="24" src="https://img.icons8.com/material-outlined/24/copy.png" alt="copy"/></a>
-                      <a href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example"><img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/qr-code--v1.png" alt="qr-code--v1"/></a>
-                      <!-- ToDo: https://getbootstrap.com/docs/5.0/components/modal/ and https://stackoverflow.com/a/68077623 -->
-                    </div>
-                    <span class="badge bg-primary rounded-pill">14</span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
                       <div class="fw-bold">Anonymous</div>
-                      <a href="#">https://formonit.github.io/anon/</a>
+                      <a href="#" id="anonLink">https://formonit.github.io/anon/</a>
+                      <a class="clipboard-js-btn" data-clipboard-target="#anonLink"><img width="24" height="24" src="https://img.icons8.com/material-outlined/24/copy.png" alt="copy"/></a>
+                      <a href="https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=Example"><img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/qr-code--v1.png" alt="qr-code--v1"/></a>
                     </div>
                     <span class="badge bg-primary rounded-pill">14</span>
                   </li>
                   <li class="list-group-item d-flex justify-content-between align-items-start">
                     <div class="ms-2 me-auto">
                       <div class="fw-bold">Vehicle sticker</div>
-                      <a href="#">https://formonit.github.io/car/</a>
+                      <a href="#" id="vehicleLink">https://formonit.github.io/car/</a>
+                      <a class="clipboard-js-btn" data-clipboard-target="#vehicleLink"><img width="24" height="24" src="https://img.icons8.com/material-outlined/24/copy.png" alt="copy"/></a>
+                      <a href="https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=Example"><img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/qr-code--v1.png" alt="qr-code--v1"/></a>
                     </div>
                     <span class="badge bg-primary rounded-pill">14</span>
                   </li>
