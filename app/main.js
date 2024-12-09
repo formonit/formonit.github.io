@@ -232,6 +232,17 @@ function renderForms () {
   document.getElementById('testFormBtn').setAttribute('formaction', formActionURL + query);
   document.getElementById('testFormBtn').disabled = false;
 
+  // Prepare the shareable links with the public key
+  const shareableLinks = document.getElementsByClassName('shareable-link');
+  for (let i=0; i < shareableLinks.length; i++) {
+    const linkElement = shareableLinks[i].getElementsByClassName('link')[0];
+    const keyElement = linkElement.getElementsByTagName('span')[0];
+    const qrElement = shareableLinks[i].getElementsByClassName('qr')[0];
+    keyElement.innerText = encodeURIComponent(publicKey);
+    const url = linkElement.innerText;
+    linkElement.href = url;
+    qrElement.href = "https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=" + url;
+  }
 };
 
 window.startWorker = function startWorker () {
