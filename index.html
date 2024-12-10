@@ -150,23 +150,23 @@
                 <p>Following lists your custom webpages made with &#x2764;&#xfe0f; and hosted by Formonit. Numbers on the right represent page views since your last sign-in.</p>
                 <!-- ToDo: https://getbootstrap.com/docs/5.0/components/modal/ and https://stackoverflow.com/a/68077623 -->
                 <ol class="list-group list-group-numbered">
-                  <li class="list-group-item d-flex justify-content-between align-items-start">
+                  <li name="anon" class="shareable-link list-group-item d-flex justify-content-between align-items-start">
                     <div class="ms-2 me-auto">
                       <div class="fw-bold">Anonymous</div>
-                      <a href="#" id="anonLink">https://formonit.github.io/anon/</a>
+                      <a class="link" id="anonLink">https://formonit.github.io/anon/<span></span></a>
                       <a class="clipboard-js-btn" data-clipboard-target="#anonLink"><img width="24" height="24" src="https://img.icons8.com/material-outlined/24/copy.png" alt="copy"/></a>
-                      <a href="https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=Example"><img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/qr-code--v1.png" alt="qr-code--v1"/></a>
+                      <a class="qr"><img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/qr-code--v1.png" alt="qr-code--v1"/></a>
                     </div>
-                    <span class="badge bg-primary rounded-pill">14</span>
+                    <span id="anonViews" class="badge bg-primary rounded-pill">14</span>
                   </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-start">
+                  <li name="vehicle" class="shareable-link list-group-item d-flex justify-content-between align-items-start">
                     <div class="ms-2 me-auto">
                       <div class="fw-bold">Vehicle sticker</div>
-                      <a href="#" id="vehicleLink">https://formonit.github.io/car/</a>
+                      <a class="link"  href="#" id="vehicleLink">https://formonit.github.io/car/<span></span></a>
                       <a class="clipboard-js-btn" data-clipboard-target="#vehicleLink"><img width="24" height="24" src="https://img.icons8.com/material-outlined/24/copy.png" alt="copy"/></a>
-                      <a href="https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=Example"><img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/qr-code--v1.png" alt="qr-code--v1"/></a>
+                      <a class="qr"><img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/qr-code--v1.png" alt="qr-code--v1"/></a>
                     </div>
-                    <span class="badge bg-primary rounded-pill">14</span>
+                    <span id="vehicleViews" class="badge bg-primary rounded-pill">14</span>
                   </li>
                 </ol>
               </details>

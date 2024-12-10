@@ -30,6 +30,14 @@ function logThis (report) {
   logs.prepend(row);
 }
 
+function updateViewCount (type, increment=1) {
+  const id = `${type}Views`;
+  let viewCount = parseInt(cache.getItem(id) ?? 0);
+  viewCount += parseInt(increment);
+  document.getElementById(id).innerText = viewCount;
+  cache.setItem(id, viewCount);
+}
+
 async function inbox (dataArray) {
   const container = document.querySelector('#inbox section');
   const inboxUnread = document.getElementById('unread');
@@ -37,6 +45,12 @@ async function inbox (dataArray) {
   // Loop over all messages
   for (const data of dataArray) {
     const origin = data.FormID ?? 'NA';
+    
+    if (origin.startsWith('_view_')) {
+      updateViewCount(origin.substring('_view_'.length - 1));
+      continue;
+    }
+    
     const chatID = data.ChatID;
     if (chatID) delete data.ChatID;
 
@@ -220,6 +234,33 @@ window.autoSyncToggle = function autoSyncToggle () {
   }
 };
 
+function renderForms () {
+  const formActionURL = cache.getItem('formActionURL');
+  const appKey = cache.getItem('appKey');
+  const publicKey = formActionURL.split('/').pop() + '@' + appKey.split('@').pop();
+  logThis('Public key = ' + publicKey);
+  document.getElementById('formActionURL').innerText = formActionURL;
+  // document.getElementById("readyForm").href = `./${btoa(formActionURL).replace(/\+/g,'_').replace(/\//g,'-').replace(/=+$/,'')}`;
+  const query = `?ok=${encodeURIComponent(checkImgURL)}&err=${encodeURIComponent(crossImgURL)}`;
+  document.getElementById('testFormChatID').value = cache.getItem('testFormChatID');
+  document.getElementById('testFormBtn').setAttribute('formaction', formActionURL + query);
+  document.getElementById('testFormBtn').disabled = false;
+
+  // Prepare the shareable links with the public key
+  const shareableLinks = document.getElementsByClassName('shareable-link');
+  for (let i=0; i < shareableLinks.length; i++) {
+    const linkElement = shareableLinks[i].getElementsByClassName('link')[0];
+    const keyElement = linkElement.getElementsByTagName('span')[0];
+    const qrElement = shareableLinks[i].getElementsByClassName('qr')[0];
+    keyElement.innerText = encodeURIComponent(publicKey);
+    const url = linkElement.innerText;
+    linkElement.href = url;
+    qrElement.href = "https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=" + url;
+    const type = shareableLinks[i].getAttribute('name');
+    updateViewCount(type, 0);
+  }
+};
+
 window.startWorker = function startWorker () {
   if (myWorker) {
     return;
@@ -268,14 +309,7 @@ window.startWorker = function startWorker () {
   logThis('Started sync');
   updateSyncStatusBadge();
 
-  const formActionURL = cache.getItem('formActionURL');
-  logThis('Public key = ' + formActionURL);
-  document.getElementById('formActionURL').innerText = formActionURL;
-  // document.getElementById("readyForm").href = `./${btoa(formActionURL).replace(/\+/g,'_').replace(/\//g,'-').replace(/=+$/,'')}`;
-  const query = `?ok=${encodeURIComponent(checkImgURL)}&err=${encodeURIComponent(crossImgURL)}`;
-  document.getElementById('testFormChatID').value = cache.getItem('testFormChatID');
-  document.getElementById('testFormBtn').setAttribute('formaction', formActionURL + query);
-  document.getElementById('testFormBtn').disabled = false;
+  renderForms();
 };
 
 window.stopWorker = function stopWorker () {
