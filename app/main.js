@@ -30,6 +30,14 @@ function logThis (report) {
   logs.prepend(row);
 }
 
+function updateViewCount (type, increment=1) {
+  const id = `${type}Views`;
+  let viewCount = parseInt(cache.getItem(id) ?? 0);
+  viewCount += parseInt(increment);
+  document.getElementById(id).innerText = viewCount;
+  cache.setItem(id, viewCount);
+}
+
 async function inbox (dataArray) {
   const container = document.querySelector('#inbox section');
   const inboxUnread = document.getElementById('unread');
@@ -37,6 +45,12 @@ async function inbox (dataArray) {
   // Loop over all messages
   for (const data of dataArray) {
     const origin = data.FormID ?? 'NA';
+    
+    if (origin.startsWith('_view_')) {
+      updateViewCount(origin.substring('_view_'.length - 1));
+      continue;
+    }
+    
     const chatID = data.ChatID;
     if (chatID) delete data.ChatID;
 
@@ -242,6 +256,8 @@ function renderForms () {
     const url = linkElement.innerText;
     linkElement.href = url;
     qrElement.href = "https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=" + url;
+    const type = shareableLinks[i].getAttribute('name');
+    updateViewCount(type, 0);
   }
 };
 
