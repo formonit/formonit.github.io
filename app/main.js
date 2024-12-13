@@ -47,7 +47,7 @@ async function inbox (dataArray) {
     const origin = data.FormID ?? 'NA';
     
     if (origin.startsWith('_view_')) {
-      updateViewCount(origin.substring('_view_'.length - 1));
+      updateViewCount(origin.substring('_view_'.length));
       continue;
     }
     
