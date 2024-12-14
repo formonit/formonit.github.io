@@ -164,7 +164,7 @@ window.reply = async function reply (chatID) {
   const url = await utils.privateUrlSecurelay(cache.getItem('appKey'));
   const replyDialog = document.getElementById('reply');
   const query = `?ok=${encodeURIComponent(checkImgURL)}&err=${encodeURIComponent(crossImgURL)}`;
-  replyDialog.getElementsByTagName('form')[0].setAttribute('action', `${url}/${cache.getItem('testFormChatID')}${query}`);
+  replyDialog.getElementsByTagName('form')[0].setAttribute('action', `${url}/${chatID}${query}`);
   replyDialog.showModal();
 };
 
