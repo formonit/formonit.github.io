@@ -409,7 +409,12 @@ function OneSignalLogin () {
     await OneSignal.init({
       appId: "78f332f2-1b40-4cf2-a849-b70f9ddd7219",
       notificationClickHandlerMatch: "origin",
-      notificationClickHandlerAction: "focus"
+      notificationClickHandlerAction: "focus",
+      welcomeNotification: {
+        title: "Formonit says ...",
+        message: "You will get notified of incoming message(s). Restart the app for these changes to take effect.",
+        url: "https://formonit.github.io"
+      }
     });
     if (!OneSignal.Notifications.isPushSupported()) return false;
     if (!OneSignal.Notifications.permission) OneSignal.Notifications.requestPermission();
@@ -419,9 +424,7 @@ function OneSignalLogin () {
     // OneSignal logout, being async, may not complete during signout()
     // So lets logout once again from any previous logins under a different external_id
     // Login once as above sometimes doesnt seem to work without relaunching the app
-    let count = 0;
-    while (OneSignal.User.externalId !== externalId && count < 5) {
-      count++;
+    if (OneSignal.User.externalId !== externalId) {
       await OneSignal.logout();
       await OneSignal.login(externalId);
     }
