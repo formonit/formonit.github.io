@@ -336,6 +336,9 @@ window.toggleWorker = function toggleWorker () {
 
 window.signout = function signout () {
   stopWorker();
+  OneSignalDeferred.push(async function(OneSignal) {
+     await OneSignal.logout();
+  });
   localStorage.clear();
   sessionStorage.clear();
   location.reload();
@@ -411,7 +414,11 @@ function OneSignalLogin () {
     if (!OneSignal.Notifications.permission) return false;
     const formActionURL = cache.getItem('formActionURL');
     const external_id = formActionURL.split('/').pop(); // The public key
-    await OneSignal.login(external_id);
+    if (OneSignal.User.PushSubscription.token) await OneSignal.login(external_id);
+    OneSignal.User.addEventListener('change', function (event) {
+      if (event.current.token) OneSignal.login(external_id);
+    });
+    OneSignal.Notifications.addEventListener("foregroundWillDisplay", sync);
   });
 }
 
