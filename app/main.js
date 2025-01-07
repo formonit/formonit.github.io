@@ -414,13 +414,17 @@ function OneSignalLogin () {
     if (!OneSignal.Notifications.isPushSupported()) return false;
     if (!OneSignal.Notifications.permission) OneSignal.Notifications.requestPermission();
     if (!OneSignal.Notifications.permission) return false;
-    await OneSignal.logout();
     const formActionURL = cache.getItem('formActionURL');
-    const external_id = formActionURL.split('/').pop(); // The public key
-    await OneSignal.login(external_id);
-    OneSignal.User.addEventListener('change', function (event) {
-      if (event.current.token) OneSignal.login(external_id);
-    });
+    const externalId = formActionURL.split('/').pop(); // Securelay public key is used as external_id
+    // OneSignal logout, being async, may not complete during signout()
+    // So lets logout once again from any previous logins under a different external_id
+    // Login once as above sometimes doesnt seem to work without relaunching the app
+    let count = 0;
+    while (OneSignal.User.externalId !== externalId && count < 5) {
+      count++;
+      await OneSignal.logout();
+      await OneSignal.login(externalId);
+    }
     OneSignal.Notifications.addEventListener("foregroundWillDisplay", sync);
   });
 }
