@@ -395,10 +395,21 @@ window.togglePasswordVisibility = function (elementID) {
   }
 };
 
+function OneSignalLogin () {
+  if (!OneSignal.Notifications.isPushSupported()) return false;
+  if (!OneSignal.Notifications.permission) OneSignal.Notifications.requestPermission();
+  if (!OneSignal.Notifications.permission) return false;
+  OneSignalDeferred.push(async function(OneSignal) {
+   const external_id = cache.getItem('appKey');
+   await OneSignal.login(external_id);
+  });
+}
+
 window.main = function main () {
   // Enable sign-in if no prior cache found in localStorage or sessionStorage
   if (cache !== null) {
     spaHide('login');
+    OneSignalLogin();
     startWorker();
     spaGoTo('inbox');
   } else {
