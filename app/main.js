@@ -351,6 +351,11 @@ window.signIn = async function signIn (callerForm) {
     } else {
       cache = sessionStorage;
     }
+    if (data.get('notifyMe') === 'on') {
+      cache.setItem('notification', 'consent');
+    } else {
+      cache.setItem('notification', 'deny');
+    }    
     const testFormChatID = await utils.hash(appKey, 'base64url', 5);
     cache.setItem('appKey', appKey);
     cache.setItem('formActionURL', formActionURL);
@@ -396,12 +401,17 @@ window.togglePasswordVisibility = function (elementID) {
 };
 
 function OneSignalLogin () {
-  if (!OneSignal.Notifications.isPushSupported()) return false;
-  if (!OneSignal.Notifications.permission) OneSignal.Notifications.requestPermission();
-  if (!OneSignal.Notifications.permission) return false;
+  if (cache.getItem('notification') == 'deny') return false;
   OneSignalDeferred.push(async function(OneSignal) {
-   const external_id = cache.getItem('appKey');
-   await OneSignal.login(external_id);
+    await OneSignal.init({
+      appId: "78f332f2-1b40-4cf2-a849-b70f9ddd7219"
+    });
+    if (!OneSignal.Notifications.isPushSupported()) return false;
+    if (!OneSignal.Notifications.permission) OneSignal.Notifications.requestPermission();
+    if (!OneSignal.Notifications.permission) return false;
+    const formActionURL = cache.getItem('formActionURL');
+    const external_id = formActionURL.split('/').pop(); // The public key
+    await OneSignal.login(external_id);
   });
 }
 

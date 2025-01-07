@@ -17,15 +17,6 @@
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
     window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(async function(OneSignal) {
-      await OneSignal.init({
-        appId: "78f332f2-1b40-4cf2-a849-b70f9ddd7219",
-        safari_web_id: "web.onesignal.auto.1712c17c-fc63-40e3-8bdd-b2b50281099d",
-        notifyButton: {
-          enable: true,
-        },
-      });
-    });
   </script>
   </head>
   <body onload="spaHide('jsAlert'); spaRestore(); new ClipboardJS('.clipboard-js-btn');" class="d-flex flex-column min-vh-100">
@@ -304,6 +295,9 @@
         <div id="keyAlert" class="alert alert-warning my-4">Store this key safely for all future logins. It cannot be recovered, if lost.</div>
         <input type="checkbox" id="keepSignedIn" name="keepSignedIn" checked>
         <label for="keepSignedIn" data-bs-toggle="tooltip" title="Uses localStorage for storing session">Keep me signed in</label>
+        <br>
+        <input type="checkbox" id="notifyMe" name="notifyMe" checked>
+        <label for="notifyMe" data-bs-toggle="tooltip" title="Sends some user data to onesignal.com">Notify me when new messages arrive</label>
         <br>
         <input type="checkbox" id="termsUnderstood" name="termsUnderstood" required>
         <label for="termsUnderstood">I have read and understood the <a href="ToS.txt">Terms</a> and <a href="PRIVACY.txt">Privacy</a> declarations</label>
