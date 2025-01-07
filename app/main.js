@@ -414,9 +414,10 @@ function OneSignalLogin () {
     if (!OneSignal.Notifications.isPushSupported()) return false;
     if (!OneSignal.Notifications.permission) OneSignal.Notifications.requestPermission();
     if (!OneSignal.Notifications.permission) return false;
+    await OneSignal.logout();
     const formActionURL = cache.getItem('formActionURL');
     const external_id = formActionURL.split('/').pop(); // The public key
-    if (OneSignal.User.PushSubscription.token) await OneSignal.login(external_id);
+    await OneSignal.login(external_id);
     OneSignal.User.addEventListener('change', function (event) {
       if (event.current.token) OneSignal.login(external_id);
     });
