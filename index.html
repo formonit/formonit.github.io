@@ -19,7 +19,7 @@
     window.OneSignalDeferred = window.OneSignalDeferred || [];
   </script>
   </head>
-  <body onload="spaHide('jsAlert'); spaRestore(); new ClipboardJS('.clipboard-js-btn');" class="d-flex flex-column min-vh-100">
+  <body onload="spaHide('jsAlert'); spaRestore(); new ClipboardJS('.clipboard-js-btn'); main();" class="d-flex flex-column min-vh-100">
     <header class="container-fluid p-5 text-bg-primary text-center">
       <a class="navbar-dark nav-link" href="/" onClick="spaGoTo(spaHomePageID);">
         <h1>Welcome to Formonit</h1>
@@ -269,7 +269,7 @@
                 <p class="alert alert-info"><strong>Protip:</strong> To export to <a href="https://www.microsoft.com/en/microsoft-365/excel">MS Excel</a>, copy the table below, followed by <code>Paste Special &gt; Text</code> in Excel. To export to <a href="https://docs.google.com/spreadsheets/create">Google Sheets</a>, use <code>Paste Special &gt; Values only (Ctrl+Shift+V)</code> instead.</p>
               </section>
             </div>
-            <p class="d-flex justify-content-start"><button type="button" class="btn btn-danger mt-4" onclick="main();" id="login">Let's get started</button></p>
+            <p class="d-flex justify-content-start"><button type="button" class="btn btn-danger mt-4" id="login">Let's get started</button></p>
             <div class="badge bg-warning position-fixed bottom-0 end-0">
               Sync: <span id="serverStatus">Off</span>
             </div>

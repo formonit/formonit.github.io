@@ -440,8 +440,10 @@ window.main = function main () {
     startWorker();
     spaGoTo('inbox');
   } else {
-    document.getElementById('signIn').showModal();
-    spaGoTo('forms');
+    document.getElementById('login').addEventListener('click', (event) => {
+      document.getElementById('signIn').showModal();
+      spaGoTo('forms');
+    })
   }
 };
 
