@@ -15,8 +15,6 @@ if (localStorage.getItem('signed') === 'in') {
   cache = sessionStorage;
 }
 
-if (cache !== null && !cache.getItem('autoSync')) document.getElementById('autoSync').checked = false;
-
 window.toggleDarkMode = function toggleDarkMode () {
   const rootElement = document.documentElement;
   const mainElement = document.querySelector('main > div');
@@ -270,11 +268,7 @@ function renderForms () {
 };
 
 window.startWorker = function startWorker () {
-  if (myWorker) {
-    return;
-  } else {
-    sessionStorage.setItem('server', 'live');
-  }
+  if (myWorker) return;
 
   myWorker = new Worker('app/worker.js', { type: 'module' });
 
@@ -326,7 +320,6 @@ window.stopWorker = function stopWorker () {
   }
   myWorker.terminate();
   myWorker = null;
-  sessionStorage.setItem('server', 'stopped');
   console.log('Worker terminated');
   const toggleServer = document.getElementById('toggleServer');
   toggleServer.value = 'Start syncing';
@@ -440,26 +433,27 @@ function OneSignalLogin () {
   });
 }
 
-// This function is to be run when our website/PWA/SPA loads.
+// This function is to be run when our website loads.
 // We can therefore safely run functions from other scripts here, e.g. spa, ClipboardJS and OneSignal.
 window.main = function main () {
   spaHide('jsAlert');
   new ClipboardJS('.clipboard-js-btn');
+
+  // Restore on page refresh.
+  // Prior sessionStorage exists only on page refresh and not on fresh load!
+  const pageIsRefreshed = Boolean(sessionStorage.getItem('wasHere'));
+  // Sets sessionStorage for next sessions to understand if its a page reload
+  sessionStorage.setItem('wasHere', 'earlier');
+  console.log('Current page is refreshed:', pageIsRefreshed);
+  if (pageIsRefreshed) spaRestore();
   
   // Sign-in automatically if prior cache is found in localStorage or sessionStorage.
   // Otherwise, enable the 'login' button.
   if (cache !== null) {
     spaHide('login');
+    if (!cache.getItem('autoSync')) document.getElementById('autoSync').checked = false;
     OneSignalLogin();
-    
-    // Restore on page refresh , go to inbox on fresh load.
-    // Prior sessionStorage exists only on page refresh and not on fresh load!
-    if (sessionStorage.getItem('server')) {
-      spaRestore();
-    } else {
-      spaGoTo('inbox');
-    }
-    
+    if (!pageIsRefreshed) spaGoTo('inbox'); // go to inbox on fresh load
     startWorker();
   } else {
     document.getElementById('login').addEventListener('click', (event) => {
@@ -471,10 +465,10 @@ window.main = function main () {
 
 if (document.readyState === 'loading') {
   // Loading hasn't finished yet
-  logThis('Registering DOMContentLoaded event handler');
+  logThis('Registering main() as DOMContentLoaded event handler');
   document.addEventListener('DOMContentLoaded', main);
 } else {
   // `DOMContentLoaded` has already fired
-  logThis('Running main directly');
+  logThis('Calling main() directly');
   main();
 }
