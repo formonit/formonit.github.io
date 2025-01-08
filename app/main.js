@@ -9,6 +9,14 @@ const crossImgURL = 'https://img.icons8.com/emoji/30/cross-mark-emoji.png';
 let myWorker = null;
 let cache = null;
 
+if (localStorage.getItem('signed') === 'in') {
+  cache = localStorage;
+} else if (sessionStorage.getItem('signed') === 'in') {
+  cache = sessionStorage;
+}
+
+if (cache !== null && !cache.getItem('autoSync')) document.getElementById('autoSync').checked = false;
+
 window.toggleDarkMode = function toggleDarkMode () {
   const rootElement = document.documentElement;
   const mainElement = document.querySelector('main > div');
@@ -318,7 +326,7 @@ window.stopWorker = function stopWorker () {
   }
   myWorker.terminate();
   myWorker = null;
-  sessionStorage.removeItem('server');
+  sessionStorage.setItem('server', 'stopped');
   console.log('Worker terminated');
   const toggleServer = document.getElementById('toggleServer');
   toggleServer.value = 'Start syncing';
@@ -432,13 +440,27 @@ function OneSignalLogin () {
   });
 }
 
+// This function is to be run when our website/PWA/SPA loads.
+// We can therefore safely run functions from other scripts here, e.g. spa, ClipboardJS and OneSignal.
 window.main = function main () {
-  // Enable sign-in if no prior cache found in localStorage or sessionStorage
+  spaHide('jsAlert');
+  new ClipboardJS('.clipboard-js-btn');
+  
+  // Sign-in automatically if prior cache is found in localStorage or sessionStorage.
+  // Otherwise, enable the 'login' button.
   if (cache !== null) {
     spaHide('login');
     OneSignalLogin();
+    
+    // Restore on page refresh , go to inbox on fresh load.
+    // Prior sessionStorage exists only on page refresh and not on fresh load!
+    if (sessionStorage.getItem('server')) {
+      spaRestore();
+    } else {
+      spaGoTo('inbox');
+    }
+    
     startWorker();
-    spaGoTo('inbox');
   } else {
     document.getElementById('login').addEventListener('click', (event) => {
       document.getElementById('signIn').showModal();
@@ -447,15 +469,12 @@ window.main = function main () {
   }
 };
 
-if (localStorage.getItem('signed') === 'in') {
-  cache = localStorage;
-} else if (sessionStorage.getItem('signed') === 'in') {
-  cache = sessionStorage;
-}
-
-if (cache !== null && !cache.getItem('autoSync')) document.getElementById('autoSync').checked = false;
-
-if (sessionStorage.getItem('server')) {
-  spaHide('login');
-  startWorker();
+if (document.readyState === 'loading') {
+  // Loading hasn't finished yet
+  logThis('Registering DOMContentLoaded event handler');
+  document.addEventListener('DOMContentLoaded', main);
+} else {
+  // `DOMContentLoaded` has already fired
+  logThis('Running main directly');
+  main();
 }
