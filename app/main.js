@@ -245,9 +245,9 @@ function renderForms () {
   const appKey = cache.getItem('appKey');
   const publicKey = formActionURL.split('/').pop() + '@' + appKey.split('@').pop();
   logThis('Public key = ' + publicKey);
-  document.getElementById('formActionURL').innerText = formActionURL;
+  document.getElementById('formActionURL').innerText = formActionURL + '?app=formonit';
   // document.getElementById("readyForm").href = `./${btoa(formActionURL).replace(/\+/g,'_').replace(/\//g,'-').replace(/=+$/,'')}`;
-  const query = `?ok=${encodeURIComponent(checkImgURL)}&err=${encodeURIComponent(crossImgURL)}`;
+  const query = `?app=formonit&ok=${encodeURIComponent(checkImgURL)}&err=${encodeURIComponent(crossImgURL)}`;
   document.getElementById('testFormChatID').value = cache.getItem('testFormChatID');
   document.getElementById('testFormBtn').setAttribute('formaction', formActionURL + query);
   document.getElementById('testFormBtn').disabled = false;
