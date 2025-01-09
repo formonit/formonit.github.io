@@ -408,7 +408,7 @@ function OneSignalLogin () {
   if (cache.getItem('notification') == 'deny') return false;
   OneSignalDeferred.push(async function(OneSignal) {
     await OneSignal.init({
-      appId: "78f332f2-1b40-4cf2-a849-b70f9ddd7219",
+      appId: "ffffe699-069f-4bbf-b2fe-0c1e33b7fc30",
       notificationClickHandlerMatch: "origin",
       notificationClickHandlerAction: "focus",
       welcomeNotification: {
