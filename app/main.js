@@ -407,8 +407,15 @@ window.togglePasswordVisibility = function (elementID) {
 function OneSignalLogin () {
   if (cache.getItem('notification') == 'deny') return false;
   OneSignalDeferred.push(async function(OneSignal) {
+    let appID;
+    try {
+      appID = await utils.appIdSecurelay(cache.getItem('appKey'));
+    } catch (err) {
+      console.log('Error finding OneSignal App ID from SecuRelay');
+      return false;
+    }
     await OneSignal.init({
-      appId: "ffffe699-069f-4bbf-b2fe-0c1e33b7fc30",
+      appId: appID,
       notificationClickHandlerMatch: "origin",
       notificationClickHandlerAction: "focus",
       welcomeNotification: {
