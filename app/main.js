@@ -342,7 +342,8 @@ window.signout = function signout () {
   });
   localStorage.clear();
   sessionStorage.clear();
-  location.reload();
+  cache = null;
+  main();
 };
 
 window.signIn = async function signIn (callerForm) {
@@ -433,7 +434,7 @@ function OneSignalLogin () {
     // So lets logout once again from any previous logins under a different external_id
     // Login once as above sometimes doesnt seem to work without relaunching the app
     if (OneSignal.User.externalId !== externalId) {
-      await OneSignal.logout();
+      if (OneSignal.User.externalId) await OneSignal.logout();
       await OneSignal.login(externalId);
     }
     OneSignal.Notifications.addEventListener("foregroundWillDisplay", sync);
@@ -442,10 +443,17 @@ function OneSignalLogin () {
 
 // This function is to be run when our website loads.
 // We can therefore safely run functions from other scripts here, e.g. spa, ClipboardJS and OneSignal.
-window.main = function main () {
+function init () {
   spaHide('jsAlert');
   new ClipboardJS('.clipboard-js-btn');
+  document.getElementById('login').addEventListener('click', (event) => {
+      document.getElementById('signIn').showModal();
+      spaGoTo('forms');
+    })
+  main();
+}
 
+function main() {
   // Restore on page refresh.
   // Prior sessionStorage exists only on page refresh and not on fresh load!
   const pageIsRefreshed = Boolean(sessionStorage.getItem('wasHere'));
@@ -453,7 +461,7 @@ window.main = function main () {
   sessionStorage.setItem('wasHere', 'earlier');
   console.log('Current page is refreshed:', pageIsRefreshed);
   if (pageIsRefreshed) spaRestore();
-  
+
   // Sign-in automatically if prior cache is found in localStorage or sessionStorage.
   // Otherwise, enable the 'login' button.
   if (cache !== null) {
@@ -463,19 +471,17 @@ window.main = function main () {
     if (!pageIsRefreshed) spaGoTo('inbox'); // go to inbox on fresh load
     startWorker();
   } else {
-    document.getElementById('login').addEventListener('click', (event) => {
-      document.getElementById('signIn').showModal();
-      spaGoTo('forms');
-    })
+    spaShow('login');
   }
 };
 
 if (document.readyState === 'loading') {
   // Loading hasn't finished yet
-  logThis('Registering main() as DOMContentLoaded event handler');
-  document.addEventListener('DOMContentLoaded', main);
+  logThis('Registering init() as DOMContentLoaded event handler');
+  document.addEventListener('DOMContentLoaded', init);
+  // DOMContentLoaded event handler shall run even before document.onload (or `<body onload="handler();">`) handler
 } else {
   // `DOMContentLoaded` has already fired
-  logThis('Calling main() directly');
-  main();
+  logThis('Calling init() directly');
+  init();
 }
