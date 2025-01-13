@@ -8,6 +8,7 @@ const checkImgURL = 'https://img.icons8.com/color/30/approval--v1.png';
 const crossImgURL = 'https://img.icons8.com/emoji/30/cross-mark-emoji.png';
 let myWorker = null;
 let cache = null;
+let messagesReceived = [] ; // Array of message IDs
 
 if (localStorage.getItem('signed') === 'in') {
   cache = localStorage;
@@ -49,7 +50,12 @@ async function inbox (dataArray) {
   const inboxUnread = document.getElementById('unread');
 
   // Loop over all messages
-  for (const data of dataArray) {
+  for (const el of dataArray) {
+    const dataID = el.id;
+    if (dataID in messagesReceived) continue;
+    messagesReceived.push(dataID);
+    const data = el.data;
+    
     const origin = data.FormID ?? 'NA';
     
     if (origin.startsWith('_view_')) {
@@ -181,7 +187,7 @@ window.loadReply = async function loadReply (callingBtn) {
         if (!response.ok) throw new Error(response.status);
         return response.json();
       })
-      .then((data) => data['Message']);
+      .then((data) => data.data.Message);
     callingBtn.previousElementSibling.innerText = reply;
   } catch (err) {
     callingBtn.previousElementSibling.innerText = 'Found none';
