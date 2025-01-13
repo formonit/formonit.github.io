@@ -52,7 +52,7 @@ async function inbox (dataArray) {
   // Loop over all messages
   for (const el of dataArray) {
     const dataID = el.id;
-    if (dataID in messagesReceived) continue;
+    if (messagesReceived.includes(dataID)) continue;
     messagesReceived.push(dataID);
     const data = el.data;
     
@@ -66,7 +66,9 @@ async function inbox (dataArray) {
     const chatID = data.ChatID;
     if (chatID) delete data.ChatID;
 
-    const keysArray = Object.keys(data);
+    data.Received = new Date(el.time).toLocaleString('en-in');
+
+    const keysArray = Object.keys(data).sort();
     keysArray.push('Reply');
     const category = await utils.hash(JSON.stringify(keysArray) + origin);
 
@@ -139,7 +141,9 @@ async function inbox (dataArray) {
     const row = document.createElement('tr');
 
     // Loop over fields of a single message
-    for (const key in data) {
+    for (const key of keysArray) {
+      if (key === 'Reply') continue;
+      
       // Create cell:
       const cell = document.createElement('td');
 
@@ -284,11 +288,11 @@ window.startWorker = function startWorker () {
     const errLvl = data.errlvl;
     const msg = data.msg;
     if (!errLvl) {
-      inbox(msg);
       logThis(`Received: ${JSON.stringify(msg)}`);
+      inbox(msg);
     } else if (errLvl === 2) {
-      stopWorker();
       logThis(`${msg}. Error: ${data.err.message}`);
+      stopWorker();
       alert('App stopped due to some critical error. Check logs.');
     } else {
       logThis(`${msg}. Error: ${data.err.message}`);
@@ -442,8 +446,21 @@ function OneSignalLogin () {
     if (OneSignal.User.externalId !== externalId) {
       if (OneSignal.User.externalId) await OneSignal.logout();
       await OneSignal.login(externalId);
+      OneSignal.User.addTag('app', 'formonit');
     }
-    OneSignal.Notifications.addEventListener("foregroundWillDisplay", sync);
+    // Register handler for processing data received via web-push
+    OneSignal.Notifications.addEventListener("foregroundWillDisplay", (notification) => {
+      const payload = notification.notification.additionalData; // Access web-pushed data
+      if (payload.webhook) return; // Ignore web-pushed data if webhook already received the data
+      if ('data' in payload) {
+        logThis(`Received via web-push: ${JSON.stringify(payload.data)}`);
+        inbox([payload.data]);
+        // If autoSync is on, still webhook didnt receive, then sync() to re-register webhook with Securelay.
+        if (cache.getItem('autoSync') === 'on') sync();
+      } else {
+        sync();
+      }
+    });
   });
 }
 
