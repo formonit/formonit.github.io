@@ -2,7 +2,7 @@
 Brief: Helper utilities.
 */
 
-import securelayEndpoint, * as securelay from 'https://cdn.jsdelivr.net/gh/securelay/api@v0.0.1/script.js';
+import securelayEndpoint, * as securelay from 'https://cdn.jsdelivr.net/gh/securelay/api@v0.0.2/script.js';
 
 /*
 Brief: Returns the first block of hex chars from a v4 UUID as a unique string
@@ -112,6 +112,11 @@ export async function privateUrlSecurelay (key, timeout = 5000) {
 export async function publicUrlSecurelay (key, timeout = 5000) {
   const [privateKey, endpointID] = key.split('@');
   return securelay.publicUrl(privateKey, endpointID, timeout);
+}
+
+export async function appIdSecurelay (key, app='formonit', timeout = 5000) {
+  const [privateKey, endpointID] = key.split('@');
+  return securelay.appId(endpointID, app, timeout);
 }
 
 /*

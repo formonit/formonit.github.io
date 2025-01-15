@@ -8,6 +8,13 @@ const checkImgURL = 'https://img.icons8.com/color/30/approval--v1.png';
 const crossImgURL = 'https://img.icons8.com/emoji/30/cross-mark-emoji.png';
 let myWorker = null;
 let cache = null;
+let messagesReceived = [] ; // Array of message IDs
+
+if (localStorage.getItem('signed') === 'in') {
+  cache = localStorage;
+} else if (sessionStorage.getItem('signed') === 'in') {
+  cache = sessionStorage;
+}
 
 window.toggleDarkMode = function toggleDarkMode () {
   const rootElement = document.documentElement;
@@ -43,7 +50,12 @@ async function inbox (dataArray) {
   const inboxUnread = document.getElementById('unread');
 
   // Loop over all messages
-  for (const data of dataArray) {
+  for (const el of dataArray) {
+    const dataID = el.id;
+    if (messagesReceived.includes(dataID)) continue;
+    messagesReceived.push(dataID);
+    const data = el.data;
+    
     const origin = data.FormID ?? 'NA';
     
     if (origin.startsWith('_view_')) {
@@ -54,7 +66,9 @@ async function inbox (dataArray) {
     const chatID = data.ChatID;
     if (chatID) delete data.ChatID;
 
-    const keysArray = Object.keys(data);
+    data.Received = new Date(el.time).toLocaleString('en-in');
+
+    const keysArray = Object.keys(data).sort();
     keysArray.push('Reply');
     const category = await utils.hash(JSON.stringify(keysArray) + origin);
 
@@ -127,7 +141,9 @@ async function inbox (dataArray) {
     const row = document.createElement('tr');
 
     // Loop over fields of a single message
-    for (const key in data) {
+    for (const key of keysArray) {
+      if (key === 'Reply') continue;
+      
       // Create cell:
       const cell = document.createElement('td');
 
@@ -175,7 +191,7 @@ window.loadReply = async function loadReply (callingBtn) {
         if (!response.ok) throw new Error(response.status);
         return response.json();
       })
-      .then((data) => data['Message']);
+      .then((data) => data.data.Message);
     callingBtn.previousElementSibling.innerText = reply;
   } catch (err) {
     callingBtn.previousElementSibling.innerText = 'Found none';
@@ -239,9 +255,9 @@ function renderForms () {
   const appKey = cache.getItem('appKey');
   const publicKey = formActionURL.split('/').pop() + '@' + appKey.split('@').pop();
   logThis('Public key = ' + publicKey);
-  document.getElementById('formActionURL').innerText = formActionURL;
+  document.getElementById('formActionURL').innerText = formActionURL + '?app=formonit';
   // document.getElementById("readyForm").href = `./${btoa(formActionURL).replace(/\+/g,'_').replace(/\//g,'-').replace(/=+$/,'')}`;
-  const query = `?ok=${encodeURIComponent(checkImgURL)}&err=${encodeURIComponent(crossImgURL)}`;
+  const query = `?app=formonit&ok=${encodeURIComponent(checkImgURL)}&err=${encodeURIComponent(crossImgURL)}`;
   document.getElementById('testFormChatID').value = cache.getItem('testFormChatID');
   document.getElementById('testFormBtn').setAttribute('formaction', formActionURL + query);
   document.getElementById('testFormBtn').disabled = false;
@@ -262,11 +278,7 @@ function renderForms () {
 };
 
 window.startWorker = function startWorker () {
-  if (myWorker) {
-    return;
-  } else {
-    sessionStorage.setItem('server', 'live');
-  }
+  if (myWorker) return;
 
   myWorker = new Worker('app/worker.js', { type: 'module' });
 
@@ -276,11 +288,11 @@ window.startWorker = function startWorker () {
     const errLvl = data.errlvl;
     const msg = data.msg;
     if (!errLvl) {
-      inbox(msg);
       logThis(`Received: ${JSON.stringify(msg)}`);
+      inbox(msg);
     } else if (errLvl === 2) {
-      stopWorker();
       logThis(`${msg}. Error: ${data.err.message}`);
+      stopWorker();
       alert('App stopped due to some critical error. Check logs.');
     } else {
       logThis(`${msg}. Error: ${data.err.message}`);
@@ -318,7 +330,6 @@ window.stopWorker = function stopWorker () {
   }
   myWorker.terminate();
   myWorker = null;
-  sessionStorage.removeItem('server');
   console.log('Worker terminated');
   const toggleServer = document.getElementById('toggleServer');
   toggleServer.value = 'Start syncing';
@@ -336,9 +347,13 @@ window.toggleWorker = function toggleWorker () {
 
 window.signout = function signout () {
   stopWorker();
+  OneSignalDeferred.push(async function(OneSignal) {
+     await OneSignal.logout();
+  });
   localStorage.clear();
   sessionStorage.clear();
-  location.reload();
+  cache = null;
+  main();
 };
 
 window.signIn = async function signIn (callerForm) {
@@ -351,6 +366,11 @@ window.signIn = async function signIn (callerForm) {
     } else {
       cache = sessionStorage;
     }
+    if (data.get('notifyMe') === 'on') {
+      cache.setItem('notification', 'consent');
+    } else {
+      cache.setItem('notification', 'deny');
+    }    
     const testFormChatID = await utils.hash(appKey, 'base64url', 5);
     cache.setItem('appKey', appKey);
     cache.setItem('formActionURL', formActionURL);
@@ -395,27 +415,96 @@ window.togglePasswordVisibility = function (elementID) {
   }
 };
 
-window.main = function main () {
-  // Enable sign-in if no prior cache found in localStorage or sessionStorage
+function OneSignalLogin () {
+  if (cache.getItem('notification') == 'deny') return false;
+  OneSignalDeferred.push(async function(OneSignal) {
+    let appID;
+    try {
+      appID = await utils.appIdSecurelay(cache.getItem('appKey'));
+    } catch (err) {
+      console.log('Error finding OneSignal App ID from SecuRelay');
+      return false;
+    }
+    await OneSignal.init({
+      appId: appID,
+      notificationClickHandlerMatch: "origin",
+      notificationClickHandlerAction: "focus",
+      welcomeNotification: {
+        title: "Formonit says ...",
+        message: "You will get notified of incoming message(s). Restart the app for these changes to take effect.",
+        url: "https://formonit.github.io"
+      }
+    });
+    if (!OneSignal.Notifications.isPushSupported()) return false;
+    if (!OneSignal.Notifications.permission) OneSignal.Notifications.requestPermission();
+    if (!OneSignal.Notifications.permission) return false;
+    const formActionURL = cache.getItem('formActionURL');
+    const externalId = formActionURL.split('/').pop(); // Securelay public key is used as external_id
+    // OneSignal logout, being async, may not complete during signout()
+    // So lets logout once again from any previous logins under a different external_id
+    // Login once as above sometimes doesnt seem to work without relaunching the app
+    if (OneSignal.User.externalId !== externalId) {
+      if (OneSignal.User.externalId) await OneSignal.logout();
+      await OneSignal.login(externalId);
+      OneSignal.User.addTag('app', 'formonit');
+    }
+    // Register handler for processing data received via web-push
+    OneSignal.Notifications.addEventListener("foregroundWillDisplay", (notification) => {
+      const payload = notification.notification.additionalData; // Access web-pushed data
+      if (payload.webhook) return; // Ignore web-pushed data if webhook already received the data
+      if ('data' in payload) {
+        logThis(`Received via web-push: ${JSON.stringify(payload.data)}`);
+        inbox([payload.data]);
+        // If autoSync is on, still webhook didnt receive, then sync() to re-register webhook with Securelay.
+        if (cache.getItem('autoSync') === 'on') sync();
+      } else {
+        sync();
+      }
+    });
+  });
+}
+
+// This function is to be run when our website loads.
+// We can therefore safely run functions from other scripts here, e.g. spa, ClipboardJS and OneSignal.
+function init () {
+  spaHide('jsAlert');
+  new ClipboardJS('.clipboard-js-btn');
+  document.getElementById('login').addEventListener('click', (event) => {
+      document.getElementById('signIn').showModal();
+      spaGoTo('forms');
+    })
+  main();
+}
+
+function main() {
+  // Restore on page refresh.
+  // Prior sessionStorage exists only on page refresh and not on fresh load!
+  const pageIsRefreshed = Boolean(sessionStorage.getItem('wasHere'));
+  // Sets sessionStorage for next sessions to understand if its a page reload
+  sessionStorage.setItem('wasHere', 'earlier');
+  console.log('Current page is refreshed:', pageIsRefreshed);
+  if (pageIsRefreshed) spaRestore();
+
+  // Sign-in automatically if prior cache is found in localStorage or sessionStorage.
+  // Otherwise, enable the 'login' button.
   if (cache !== null) {
     spaHide('login');
+    if (!cache.getItem('autoSync')) document.getElementById('autoSync').checked = false;
+    OneSignalLogin();
+    if (!pageIsRefreshed) spaGoTo('inbox'); // go to inbox on fresh load
     startWorker();
-    spaGoTo('inbox');
   } else {
-    document.getElementById('signIn').showModal();
-    spaGoTo('forms');
+    spaShow('login');
   }
 };
 
-if (localStorage.getItem('signed') === 'in') {
-  cache = localStorage;
-} else if (sessionStorage.getItem('signed') === 'in') {
-  cache = sessionStorage;
-}
-
-if (cache !== null && !cache.getItem('autoSync')) document.getElementById('autoSync').checked = false;
-
-if (sessionStorage.getItem('server')) {
-  spaHide('login');
-  startWorker();
+if (document.readyState === 'loading') {
+  // Loading hasn't finished yet
+  logThis('Registering init() as DOMContentLoaded event handler');
+  document.addEventListener('DOMContentLoaded', init);
+  // DOMContentLoaded event handler shall run even before document.onload (or `<body onload="handler();">`) handler
+} else {
+  // `DOMContentLoaded` has already fired
+  logThis('Calling init() directly');
+  init();
 }
