@@ -64,27 +64,42 @@
                   But you can also take it literally, as a platform to form your digital presence on.
                   Basically, we aspire to give you a free and easy, feature-rich, form-backend solution for all your static websites.
                 </p>
-                <p>You can simply use the generated action URL in your HTML forms.</p>
-                <p>Simpler even is to embed our form snippet in your website's HTML.</p>
-                <p>If you don't require custom forms, then the simplest option is to direct your users
-                  (clients/customers/followers) to the contact-page(s) we generate and host for you for free!</p>
+
+                <details class="my-2">
+                <summary><h3>How to use</h3></summary>
+                <p>To setup your HTML forms, you have three options, all available in the <a href="#forms" onclick="spaGoTo('forms');">Forms</a> section upon sign up.</p>
+                <ol>
+                <li>You can simply use the generated action URL in your HTML forms.</li>
+                <li>Simpler even is to embed our form snippet in your website's HTML.</li>
+                <li>If you don't require custom forms, then the simplest option is to direct your users
+                  to the contact-page(s) we generate and host for you for free!</li>
+                </ol>
                 <p>
-                  All these options will be available in the Forms section upon sign up.
-                  Once your users submit the form(s), your Inbox here will be populated.
-                  If you setup Telegram integration, you will also be notified on TG.
+                  Once your users submit the form(s), your <a href="#inbox" onclick="spaGoTo('inbox');">Inbox</a> here will be populated and your device will get a web-push notification.
+                  If you <a href="#settings" onclick="spaGoTo('settings');">setup Telegram integration</a>, you will also be notified on TG.
                 </p>
-                <p>There are a few tradeoffs for availing this service free of cost &#128513;:</p>
+                <p>You can also check if you are properly receiving form-submissions from <a href="#admin" onclick="spaGoTo('admin');">here</a>.</p>
+                </details>
+                
+                <details class="my-2">
+                <summary><h3>Pricing</h3></summary>
+                This service is free. However, if you find this project useful, <a href="https://buymeacoffee.com/somajitdey">please consider donating towards its survival</a>.
+                No support is too small. Thank you &#128154;
+                <br><br>
+                <p>Note that there are a few tradeoffs for availing this service free of cost &#128513;:</p>
                 <ol>
                 <li>You have to be online atleast once everyday to sync/collect your users' messages, if any. That's because we only store your data upto a day if you are offline</li>
                 <li>Once you sync the data, it is your responsibility to store it somewhere safe, if need be. Synced data is lost upon page-refresh</li>
                 <li>We only support forms where all the values are texts. Form data needs to be less than 10KiB in size and posted as 'application/x-www-form-urlencoded'</li>
                 </ol>
+                </details>
                 
-                <h3>Features</h3>
+                <details class="my-2">
+                <summary><h3>Features</h3></summary>
                 Exsiting features are coded <strong style="color:green">green</strong>.
                 Upcoming ones <strong style="color:blue">blue</strong>.
                 And sunsetting/deprecated ones <strong style="color:red">red</strong>.
-                Implementation of some of the blue-coded features are subject to <a href="https://github.com/formonit/formonit.github.io/discussions">demand/popular-requests</a> and <a href="https://buymeacoffee.com/somajitdey">support</a>.
+                Implementation of some of the blue-coded features are subject to <a href="#contact" onClick="spaGoTo('contact');">demand/popular-requests</a> and <a href="https://buymeacoffee.com/somajitdey">support</a>.
                 <ol>
                 <li><strong style="color:green">This website is an <a href="https://developer.mozilla.org/en-US/docs/Glossary/SPA">SPA</a> running client-side, i.e. on your browser.
                 So, you are self-hosting your form-backend!</strong></li>
@@ -106,14 +121,10 @@
                 <li><strong style="color:blue">Comments hosting backend for your static blogging sites.</strong></li>
                 <li><strong style="color:blue">Premium plans with better (rate/size/time/type) limits (compared to the free plan)</strong></li>
                 </ol>
-                
-                <h3>Appeal</h3>
-                If you find this project useful and would like to see it mature, <a href="https://buymeacoffee.com/somajitdey">consider donating towards its survival</a>.
-                No support is too small.
-                Feel free to comment and provide your feedback, request features or report bugs <a href="https://github.com/formonit/formonit.github.io/discussions">here</a>.
-                Thank you &#128154;
-                <br><br>
-                <h3>Acknowledgements</h3>
+                </details>
+
+                <details class="my-2">
+                <summary><h3>Acknowledgements</h3></summary>
                 Formonit is powered by these 3rd party services/software:
                 <ul class="nav nav-pills nav-justified">
                   <li class="nav-item"><a class="nav-link" href="https://securelay.github.io/">SecuRelay</a></li>
@@ -130,6 +141,7 @@
                   <li class="nav-item"><a class="nav-link" href="https://goqr.me/">goQR.me</a></li>
                   <li class="nav-item"><a class="nav-link" href="https://onesignal.com/web-push">OneSignal</a></li>
                 </ul>
+                </details>
               </section>
             </div>
             <div class="spa-page" id="forms">
