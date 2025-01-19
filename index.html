@@ -70,9 +70,9 @@
                 <summary><h3>How to use</h3></summary>
                 <p>To setup your HTML forms, you have three options, all available in the <a href="#forms" onclick="spaGoTo('forms');">Forms</a> section upon sign up.</p>
                 <ol>
-                <li>You can simply use the generated action URL in your HTML forms.</li>
+                <li>You can simply use the generated URL in the <em>action</em> attribute of your HTML forms.</li>
                 <li>Simpler even is to embed our form snippet in your website's HTML.</li>
-                <li>If you don't require custom forms, then the simplest option is to direct your users
+                <li>If you don't require custom forms, or want a no-code solution, then the simplest option is to direct your users
                   to the contact-page(s) we generate and host for you for free!</li>
                 </ol>
                 <p>
@@ -89,9 +89,9 @@
                 <br><br>
                 <p>Note that there are a few tradeoffs for availing this service free of cost &#128513;:</p>
                 <ol>
-                <li>You have to be online atleast once everyday to sync/collect your users' messages, if any. That's because we only store your data upto a day if you are offline</li>
-                <li>Once you sync the data, it is your responsibility to store it somewhere safe, if need be. Synced data is lost upon page-refresh</li>
-                <li>We only support forms where all the values are texts. Form data needs to be less than 10KiB in size and posted as 'application/x-www-form-urlencoded'</li>
+                <li>1-day data retention</li>
+                <li>Data retention till first sync; synced data is lost upon page reload</li>
+                <li>Only support forms with textual data, of total size less than 10KiB, and POSTed as 'application/x-www-form-urlencoded'</li>
                 </ol>
                 </details>
                 
@@ -102,25 +102,21 @@
                 And sunsetting/deprecated ones <strong style="color:red">red</strong>.
                 Implementation of some of the blue-coded features are subject to <a href="#contact" onClick="spaGoTo('contact');">demand/popular-requests</a> and <a href="https://buymeacoffee.com/somajitdey">support</a>.
                 <ol>
-                <li><strong style="color:green">This website is an <a href="https://developer.mozilla.org/en-US/docs/Glossary/SPA">SPA</a> running client-side, i.e. on your browser.
-                So, you are self-hosting your form-backend!</strong></li>
-                <li><strong style="color:green">Being a <a href="https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps">PWA</a>, can be installed on any platform having a standard web-browser</strong></li>
-                <li><strong style="color:green">Same submission (action) URL for all your forms. Inbox differentiates forms based on their unique FormID parameter</strong></li>
-                <li><strong style="color:green">Readily shareable contact-pages for different use cases along with their view counts</strong></li>
-                <li><strong style="color:green">Option to directly reply to the users who message you</strong></li>
-                <li><strong style="color:green">Telegram integration</strong></li>
-                <li><strong style="color:green">Copy button in Inbox to copy your users' details and messages to MS Excel or Google Sheets</strong></li>
-                <li><strong style="color:green">Sync messages on-demand or automatically. Or turn-off sync as you copy from Inbox etc.</strong></li>
-                <li><strong style="color:green">A dedicated section for testing everything is working as desired</strong></li>
-                <li><strong style="color:green">High-level logs for non-develeopers</strong></li>
+                <li><strong style="color:green">Can be installed on any platform that has a standard web-browser</strong></li>
+                <li><strong style="color:green">Same submission URL for all your forms. Inbox differentiates forms based on their unique FormID parameter</strong></li>
                 <li><strong style="color:green">Push notifications</strong></li>
-                <li><strong style="color:blue">Readily shareable profile-page, hosted for free, containing your brief bio, avatar and links to your socials and website as well as a contact-form. This can serve as your own website, if you don't have one</strong></li>
-                <li><strong style="color:blue">Option to hide details of the users who contact/message you from middlemen, through end-to-end encryption. The hosted contact-pages have E2E built-in</strong></li>
-                <li><strong style="color:blue">Full-fledged chatbox that logs all your 2-way conversations in one place</strong></li>
-                <li><strong style="color:blue">2 factor authentication for sign-in based on password and OTP sent to email</strong></li>
-                <li><strong style="color:blue">Sign-in and data storage using your free GitHub account</strong></li>
-                <li><strong style="color:blue">Comments hosting backend for your static blogging sites.</strong></li>
-                <li><strong style="color:blue">Premium plans with better (rate/size/time/type) limits (compared to the free plan)</strong></li>
+                <li><strong style="color:green">Telegram integration</strong></li>
+                <li><strong style="color:green">Tabular representation of form submissions in the Inbox. Copy all the data with a single-click and paste in MS Excel or Google Sheets</strong></li>
+                <li><strong style="color:green">Option to directly reply to the users who contact you</strong></li>
+                <li><strong style="color:green">Readily shareable contact-pages for different use cases along with their view counts</strong></li>
+                <li><strong style="color:green">Dedicated section for testing everything is working as desired</strong></li>
+                <li><strong style="color:green">High-level logs for non-develeopers</strong></li>
+                <li><strong style="color:blue">Readily shareable profile-page, with its view count. This profile-page contains your brief bio, avatar and links to your socials and website as well as a contact-form. This can serve as your own website</strong></li>
+                <li><strong style="color:blue">End-to-end encryption</strong></li>
+                <li><strong style="color:blue">Chatbox</strong></li>
+                <li><strong style="color:blue">Email-based login</strong></li>
+                <li><strong style="color:blue">Comments hosting for static sites</strong></li>
+                <li><strong style="color:blue">Premium plans with larger rate-limits</strong></li>
                 </ol>
                 </details>
 
@@ -143,6 +139,17 @@
                   <li class="nav-item"><a class="nav-link" href="https://onesignal.com/web-push">OneSignal</a></li>
                 </ul>
                 </details>
+                
+                <details class="my-2">
+                <summary><h3>See also</h3></summary>
+                Similar projects that you might find useful:
+                <ul class="nav nav-pills nav-justified">
+                  <li class="nav-item"><a class="nav-link" href="https://formspree.io/">Formspree</a></li>
+                  <li class="nav-item"><a class="nav-link" href="https://fabform.io/">FabForm</a></li>
+                  <li class="nav-item"><a class="nav-link" href="https://formspark.io/">Formspark</a></li>
+                  <li class="nav-item"><a class="nav-link" href="https://www.emailjs.com/">EmailJS</a></li>
+                </ul>
+                </details>
               </section>
             </div>
             <div class="spa-page" id="forms">
@@ -152,7 +159,7 @@
                 <p>Edit the below snippet as follows and embed in your website.</p>
                 <ol class="list-group list-group-numbered">
                   <li class="list-group-item list-group-item-success">
-                    Replace <code>XXXXX</code> with <mark id="formActionURL">the form action URL generated upon sign-up</mark>
+                    Replace <code>XXXXX</code> with <mark id="formActionURL">the URL generated upon sign-up</mark>
                     <button class="clipboard-js-btn" data-clipboard-target="#formActionURL">Copy URL</button>
                   </li>
                   <li class="list-group-item list-group-item-info">Replace <code>YYYYY</code> with a unique descriptive string</li>
@@ -235,10 +242,11 @@
                 <details class="my-4" open>
                   <summary><strong>Test</strong></summary>
                   <p>Test if everything is working properly with the following sample form. The HTML underlying this form is based on the embeddable snippet shown in <a href="#forms" onClick="spaGoTo('forms');">Forms</a>.</p>
-                  <p>3 things should happen when you submit the form.</p>
+                  <p>4 things should happen when you submit the form.</p>
                   <ol type="1">
                     <li>The below Log will report an entry.</li>
                     <li><a href="#inbox" onClick="spaGoTo('inbox');">Inbox</a> will be populated.</li>
+                    <li>You will get a push notification.</li>
                     <li>You will get the form data as a Telegram message.</li>
                   </ol>
                   <form method="POST" target="testForm_iframe" onsubmit="document.getElementsByName('testForm_iframe')[0].style='background:url(https://img.icons8.com/material-outlined/30/spinner-frame-2.png) no-repeat';">
