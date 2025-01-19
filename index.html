@@ -71,11 +71,12 @@
                 <summary><h3>How to use</h3></summary>
                 <p>To setup your HTML forms, you have three options, all available in the <a href="#forms" onclick="spaGoTo('forms');">Forms</a> section upon sign up.</p>
                 <ol>
-                <li>You can simply use the generated URL in the <em>action</em> attribute of your HTML forms.</li>
+                <li>You can simply use the generated URL in the <code>action</code> attribute of your HTML forms.</li>
                 <li>Simpler even is to embed our form snippet in your website's HTML.</li>
                 <li>If you don't require custom forms, or want a no-code solution, then the simplest option is to direct your users
                   to the contact-page(s) we generate and host for you for free!</li>
                 </ol>
+                <p>You can also set up custom redirects for your forms.</p>
                 <p>
                   Once your users submit the form(s), your <a href="#inbox" onclick="spaGoTo('inbox');">Inbox</a> here will be populated and your device will get a web-push notification.
                   If you <a href="#settings" onclick="spaGoTo('settings');">setup Telegram integration</a>, you will also be notified on TG.
@@ -98,13 +99,14 @@
                 
                 <details class="my-2">
                 <summary><h3>Features</h3></summary>
-                Exsiting features are coded <strong style="color:green">green</strong>.
+                Existing features are coded <strong style="color:green">green</strong>.
                 Upcoming ones <strong style="color:blue">blue</strong>.
                 And sunsetting/deprecated ones <strong style="color:red">red</strong>.
                 Implementation of some of the blue-coded features are subject to <a href="#contact" onClick="spaGoTo('contact');">demand/popular-requests</a> and <a href="https://buymeacoffee.com/somajitdey">support</a>.
                 <ol>
                 <li><strong style="color:green">Can be installed on any platform that has a standard web-browser</strong></li>
                 <li><strong style="color:green">Same submission URL for all your forms. Inbox differentiates forms based on their unique FormID parameter</strong></li>
+                <li><strong style="color:green">Custom redirects upon form submission</strong></li>
                 <li><strong style="color:green">Push notifications</strong></li>
                 <li><strong style="color:green">Telegram integration</strong></li>
                 <li><strong style="color:green">Tabular representation of form submissions in the Inbox. Copy all the data with a single-click and paste in MS Excel or Google Sheets</strong></li>
@@ -162,6 +164,11 @@
                   <li class="list-group-item list-group-item-success">
                     Replace <code>XXXXX</code> with <mark id="formActionURL">the URL generated upon sign-up</mark>
                     <button class="clipboard-js-btn" data-clipboard-target="#formActionURL">Copy URL</button>
+                  </li>
+                  <li class="list-group-item list-group-item-danger">
+                    To setup custom redirects upon form submission, simply add the following query string to the <code>XXXXX</code> URL:
+                    <code>?ok=:successURL&amperr=:errorURL</code>, where <code>:successURL</code> denotes the URL-encoded redirect URL for form submission success
+                    and <code>:errorURL</code> is the same for submission error. If no redirect is required, a hidden iframe target may be used as shown in the snippet below.
                   </li>
                   <li class="list-group-item list-group-item-info">Replace <code>YYYYY</code> with a unique descriptive string</li>
                 </ol>
