@@ -467,7 +467,6 @@ function OneSignalLogin () {
 // This function is to be run when our website loads.
 // We can therefore safely run functions from other scripts here, e.g. spa, ClipboardJS and OneSignal.
 function init () {
-  spaHide('jsAlert');
   new ClipboardJS('.clipboard-js-btn');
   document.getElementById('login').addEventListener('click', (event) => {
       document.getElementById('signIn').showModal();
