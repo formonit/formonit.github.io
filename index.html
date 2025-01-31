@@ -220,8 +220,8 @@
                   <form onsubmit="event.preventDefault();TGconfig(this);">
                     <p>Setup Telegram notificiation in just 2 easy steps.</p>
                     <label for="TGbotKey" class="form-label">1. Enter your Telegram Bot API Token (available from <a href="https://t.me/botfather">@BotFather</a>):</label>
-                    <input type="text" id="TGbotKey" name="TGbotKey" class="form-control" autocomplete="on" required>
-                    <input type="checkbox" id="togglePasswordVisibilityCBox1" onchange="togglePasswordVisibility('TGbotKey');" checked>
+                    <input type="password" id="TGbotKey" name="TGbotKey" class="form-control" autocomplete="on" required>
+                    <input type="checkbox" id="togglePasswordVisibilityCBox1" onchange="togglePasswordVisibility('TGbotKey');">
                     <label for="togglePasswordVisibilityCBox1">Show</label>
                     <br><br>
                     <p>2. Send any text to the Bot. Then, click Fetch Chat ID.</p>
