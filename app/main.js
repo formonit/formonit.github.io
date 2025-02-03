@@ -210,7 +210,6 @@ window.genUUID = async function genUUID () {
 };
 
 window.fetchChatID = async function fetchChatID (botAPIKey) {
-  console.log('Fetching Telegram chat ID' + botAPIKey);
   try {
     const TGchatID = await utils.chatIDTG(botAPIKey);
     document.getElementById('chatID').value = TGchatID;
@@ -396,7 +395,6 @@ window.TGconfig = function TGconfig (callerForm) {
   const formData = new FormData(callerForm);
   const dataObj = {};
   for (const [key, val] of formData.entries()) {
-    console.log(key + ',' + val);
     dataObj[key] = val;
     cache.setItem(key, val);
   }
@@ -479,7 +477,6 @@ function main() {
   const pageIsRefreshed = Boolean(sessionStorage.getItem('wasHere'));
   // Sets sessionStorage for next sessions to understand if its a page reload
   sessionStorage.setItem('wasHere', 'earlier');
-  console.log('Current page is refreshed:', pageIsRefreshed);
   if (pageIsRefreshed) spaRestore();
 
   // Sign-in automatically if prior cache is found in localStorage or sessionStorage.
