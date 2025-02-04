@@ -66,7 +66,7 @@ async function inbox (dataArray) {
     const chatID = data.ChatID;
     if (chatID) delete data.ChatID;
 
-    data.Received = new Date(el.time).toLocaleString('en-in');
+    data.Received = new Date(el.time*1000).toLocaleString('en-in');
 
     const keysArray = Object.keys(data).sort();
     keysArray.push('Reply');
