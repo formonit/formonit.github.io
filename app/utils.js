@@ -2,7 +2,7 @@
 Brief: Helper utilities.
 */
 
-import securelayEndpoint, * as securelay from 'https://cdn.jsdelivr.net/gh/securelay/api@v0.0.2/script.js';
+import securelayEndpoint, * as securelay from 'https://cdn.jsdelivr.net/gh/securelay/api@v0.0.3/script.js';
 
 /*
 Brief: Returns the first block of hex chars from a v4 UUID as a unique string
@@ -93,30 +93,30 @@ Brief: GET at private path of Securelay.
 Arg: Key is string of the format `<privateKey>@<endpointID>`. Optionally provide webhook URL.
 Error: Throws status code of the response when promise is rejected.
 */
-export async function syncSecurelay (key, webhook = null, timeout = 5000) {
+export async function syncSecurelay (key, { webhook, timeout = 5000 } = {}) {
   const [privateKey, endpointID] = key.split('@');
-  return securelay.sync(privateKey, endpointID, webhook, timeout);
+  return securelay.sync(privateKey, endpointID, { webhook: webhook, timeout: timeout });
 }
 
-export async function keySecurelay (timeout = 5000) {
-  const [_, endpointID] = await securelayEndpoint();
-  const privateKey = await securelay.key(endpointID, timeout);
+export async function keySecurelay ({ timeout = 5000 } = {}) {
+  const [, endpointID] = await securelayEndpoint();
+  const privateKey = await securelay.key(endpointID, { timeout: timeout });
   return `${privateKey}@${endpointID}`;
 }
 
-export async function privateUrlSecurelay (key, timeout = 5000) {
+export async function privateUrlSecurelay (key, { timeout = 5000 } = {}) {
   const [privateKey, endpointID] = key.split('@');
-  return securelay.privateUrl(privateKey, endpointID, timeout);
+  return securelay.privateUrl(privateKey, endpointID, { timeout: timeout });
 }
 
-export async function publicUrlSecurelay (key, timeout = 5000) {
+export async function publicUrlSecurelay (key, { timeout = 5000 } = {}) {
   const [privateKey, endpointID] = key.split('@');
-  return securelay.publicUrl(privateKey, endpointID, timeout);
+  return securelay.publicUrl(privateKey, endpointID, { timeout: timeout });
 }
 
-export async function appIdSecurelay (key, app='formonit', timeout = 5000) {
+export async function appIdSecurelay (key, { app = 'formonit', timeout = 5000 } = {}) {
   const [privateKey, endpointID] = key.split('@');
-  return securelay.appId(endpointID, app, timeout);
+  return securelay.appId(endpointID, app, { timeout: timeout });
 }
 
 /*

@@ -25,7 +25,7 @@ function pollPipe (callback, errHandler, pollInterval = 0, timeout = null) {
 }
 
 function pollSecurelay (callback, errHandler, pollInterval = 3600000, timeout = 10000) {
-  syncSecurelay(cache.get('appKey'), cache.get('webhook'), timeout)
+  syncSecurelay(cache.get('appKey'), { webhook: cache.get('webhook'), timeout: timeout })
     .then((dataObj) => callback(dataObj))
     .catch((err) => {
       err.cause = 'securelay';
