@@ -66,6 +66,8 @@ async function inbox (dataArray) {
     const chatID = data.ChatID;
     if (chatID) delete data.ChatID;
 
+    if ('geolocation' in el && ! ('Location' in data)) data.Location = el.geolocation;
+
     data.Received = new Date(el.time*1000).toLocaleString('en-in');
 
     const keysArray = Object.keys(data).sort();
