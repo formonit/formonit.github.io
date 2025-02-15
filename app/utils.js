@@ -2,7 +2,7 @@
 Brief: Helper utilities.
 */
 
-import securelayEndpoint, * as securelay from 'https://cdn.jsdelivr.net/gh/securelay/api@v0.0.3/script.js';
+import securelayEndpoint, * as securelay from 'https://cdn.jsdelivr.net/gh/securelay/api@v0.0.4/script.js';
 
 /*
 Brief: Returns the first block of hex chars from a v4 UUID as a unique string
