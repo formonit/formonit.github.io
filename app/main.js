@@ -91,7 +91,7 @@ async function inbox (dataArray) {
       const copyBtn = document.createElement('button');
       copyBtn.append('Copy table');
       copyBtn.classList.add('clipboard-js-btn', 'my-4');
-      copyBtn.setAttribute('data-clipboard-target', `#${category}`);
+      copyBtn.setAttribute('data-clipboard-target', `#${CSS.escape(category)}`);
       details.append(copyBtn);
 
       const div = document.createElement('div');
