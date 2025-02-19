@@ -449,15 +449,7 @@ function OneSignalLogin () {
     // Register handler for processing data received via web-push
     OneSignal.Notifications.addEventListener("foregroundWillDisplay", (notification) => {
       const payload = notification.notification.additionalData; // Access web-pushed data
-      if (payload.webhook) return; // Ignore web-pushed data if webhook already received the data
-      if ('data' in payload) {
-        logThis(`Received via web-push: ${JSON.stringify(payload.data)}`);
-        inbox([payload.data]);
-        // If autoSync is on, still webhook didnt receive, then sync() to re-register webhook with Securelay.
-        if (cache.getItem('autoSync') === 'on') sync();
-      } else {
-        sync();
-      }
+      if (! messagesReceived.includes(payload.id)) sync(); // Message not already received
     });
   });
 }
