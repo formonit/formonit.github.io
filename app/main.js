@@ -55,11 +55,14 @@ async function inbox (dataArray) {
     if (!el) continue
     const dataID = el.id;
     if (messagesReceived.includes(dataID)) continue;
+
     messagesReceived.push(dataID);
-    idb.set(dataID, el);
+    idb.set(dataID, structuredClone(el)); // Do this before mutating el or el.data
+
     const data = el.data;
     
-    const origin = data.FormID ?? 'NA';
+    const origin = data.FormID ?? 'Undefined';
+    delete data.FormID;
     
     if (origin.startsWith('_view_')) {
       updateViewCount(origin.substring('_view_'.length));
@@ -67,7 +70,7 @@ async function inbox (dataArray) {
     }
     
     const chatID = data.ChatID;
-    if (chatID) delete data.ChatID;
+    delete data.ChatID;
 
     if ('geolocation' in el && ! ('Location' in data)) data.Location = el.geolocation;
 
@@ -231,6 +234,11 @@ window.sync = function sync () {
   if (myWorker) myWorker.postMessage({ cmd: 'syncNow' });
 };
 
+window.clearInbox = function clearInbox () {
+  if (!confirm('Are you sure you want to delete all inboxed messages?')) return;
+  
+}
+
 function updateSyncStatusBadge () {
   const badge = document.getElementById('serverStatus');
   if (myWorker) {
@@ -349,6 +357,7 @@ window.toggleWorker = function toggleWorker () {
 };
 
 window.signout = function signout () {
+  if (!confirm('Are you sure you want to log out? This will delete all your data from this device.')) return;
   stopWorker();
   OneSignalDeferred.push(async function(OneSignal) {
      await OneSignal.logout();

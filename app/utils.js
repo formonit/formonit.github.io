@@ -7,21 +7,33 @@ import {
   set as idbSet,
   setMany as idbSetMany,
   values as idbValues,
-  del as idbDel
+  del as idbDel,
+  delMany as idbDelMany,
+  clear as idbClear
 } from 'https://cdn.jsdelivr.net/npm/idb-keyval@6/+esm';
 
 export class idb {
+  #staged = {};
   
-  #staged = [];
+  constructor () {
+    this.#clearStage();
+  }
   
-  set (key, val, flush = false) {
+  #clearStage () {
+    this.#staged = { set: [], del: [] };
+  }
+  
+  async set (key, val, flush = false) {
     if (flush) return idbSet(key, val);
-    this.#staged.push(arguments);
+    this.#staged.set.push([key, val]);
   }
   
   async flush () {
-    const ret = await idbSetMany(this.#staged);
-    this.#staged = [];
+    const ret = Promise.all([
+      idbSetMany(this.#staged.set),
+      idbDelMany(this.#staged.del)
+    ])
+    this.#clearStage();
     return ret;
   }
   
@@ -31,8 +43,13 @@ export class idb {
     return array;
   }
   
-  async del (key) {
-    return idbDel(key);
+  async del (key, flush = false) {
+    if (flush) return idbDel(key);
+    this.#staged.del.push(key);
+  }
+  
+  async clear () {
+    return idbClear();
   }
 }
 
