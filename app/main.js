@@ -46,7 +46,7 @@ function updateViewCount (type, increment=1) {
   cache.setItem(id, viewCount);
 }
 
-async function inbox (dataArray) {
+async function inbox (dataArray, fresh=true) {
   const container = document.querySelector('#inbox section');
   const inboxUnread = document.getElementById('unread');
 
@@ -134,13 +134,13 @@ async function inbox (dataArray) {
           categoryUnread.toggleAttribute('hidden', true);
         } else {
           /* the element was toggled closed */
-          const rowList = tableBody.getElementsByTagName('tr');
           // Unaccentuate old messages
-          for (let i = 1; i <= rowList.length; i++) {
-            // Looping from bottom [rowList.length - i] to avoid unaccentuating new incoming messages
-            // rowList.length is live, hence not assigned to const
-            rowList[rowList.length - i].classList.remove('table-primary');
-          }
+          // querySelectorAll returns a live nodelist which may change whenever another event handler updates document
+          // Hence using a shallow copy (Array.from) to isolate
+          Array.from(tableBody.querySelectorAll('tr.table-primary'))
+            .forEach((el) => {
+              el.classList.remove('table-primary');
+            });
         }
       });
     }
@@ -171,10 +171,10 @@ async function inbox (dataArray) {
     document.getElementById(category).prepend(row);
 
     // Accentuate row as new
-    row.className = 'table-primary';
+    if (fresh) row.className = 'table-primary';
 
     // Update unread message count
-    if (!row.checkVisibility()) {
+    if (fresh && !row.checkVisibility()) {
       inboxUnread.innerText = parseInt(inboxUnread.innerText) + 1;
       const categoryUnread = document.getElementById(`${category}Unread`);
       categoryUnread.innerText = parseInt(categoryUnread.innerText) + 1;
@@ -234,9 +234,13 @@ window.sync = function sync () {
   if (myWorker) myWorker.postMessage({ cmd: 'syncNow' });
 };
 
-window.clearInbox = function clearInbox () {
-  if (!confirm('Are you sure you want to delete all inboxed messages?')) return;
-  
+window.clearInbox = function clearInbox (force = false) {
+  if ( !(force || confirm('Are you sure you want to delete all inboxed messages?')) ) return;
+  idb.clear();
+  document.querySelectorAll('#inbox section details')
+    .forEach((el) => {
+      el.remove();
+    });
 }
 
 function updateSyncStatusBadge () {
@@ -365,10 +369,12 @@ window.signout = function signout () {
   localStorage.clear();
   sessionStorage.clear();
   cache = null;
+  clearInbox(true);
   main();
 };
 
 window.signIn = async function signIn (callerForm) {
+  idb.clear(); // Just in case previous logout didnt clear IndexedDB completely
   const data = new FormData(callerForm);
   const appKey = data.get('appKey');
   try {
@@ -494,7 +500,7 @@ function main() {
     startWorker();
     renderForms();
     // Load earlier messages from indexedDB, sorted chronologically
-    idb.vals((el1, el2) => el1.time - el2.time).then((dataArray) => inbox(dataArray));
+    idb.vals((el1, el2) => el1.time - el2.time).then((dataArray) => inbox(dataArray, false));
   } else {
     spaShow('login');
   }
