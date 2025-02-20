@@ -4,6 +4,7 @@ Brief: Main entry point for the app.
 
 import * as utils from './utils.js';
 
+const idb = new utils.idb();
 const checkImgURL = 'https://img.icons8.com/color/30/approval--v1.png';
 const crossImgURL = 'https://img.icons8.com/emoji/30/cross-mark-emoji.png';
 let myWorker = null;
@@ -51,9 +52,11 @@ async function inbox (dataArray) {
 
   // Loop over all messages
   for (const el of dataArray) {
+    if (!el) continue
     const dataID = el.id;
     if (messagesReceived.includes(dataID)) continue;
     messagesReceived.push(dataID);
+    idb.set(dataID, el);
     const data = el.data;
     
     const origin = data.FormID ?? 'NA';
@@ -175,6 +178,7 @@ async function inbox (dataArray) {
       categoryUnread.toggleAttribute('hidden', false);
     }
   }
+  idb.flush(); // Store messages to indexedDB, against id
 }
 
 window.reply = async function reply (chatID) {
@@ -321,8 +325,6 @@ window.startWorker = function startWorker () {
 
   logThis('Started sync');
   updateSyncStatusBadge();
-
-  renderForms();
 };
 
 window.stopWorker = function stopWorker () {
@@ -481,6 +483,9 @@ function main() {
     OneSignalLogin();
     if (!pageIsRefreshed) spaGoTo('inbox'); // go to inbox on fresh load
     startWorker();
+    renderForms();
+    // Load earlier messages from indexedDB, sorted chronologically
+    idb.vals((el1, el2) => el1.time - el2.time).then((dataArray) => inbox(dataArray));
   } else {
     spaShow('login');
   }

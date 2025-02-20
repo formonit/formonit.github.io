@@ -3,6 +3,38 @@ Brief: Helper utilities.
 */
 
 import securelayEndpoint, * as securelay from 'https://cdn.jsdelivr.net/gh/securelay/api@v0.0.4/script.js';
+import {
+  set as idbSet,
+  setMany as idbSetMany,
+  values as idbValues,
+  del as idbDel
+} from 'https://cdn.jsdelivr.net/npm/idb-keyval@6/+esm';
+
+export class idb {
+  
+  #staged = [];
+  
+  set (key, val, flush = false) {
+    if (flush) return idbSet(key, val);
+    this.#staged.push(arguments);
+  }
+  
+  async flush () {
+    const ret = await idbSetMany(this.#staged);
+    this.#staged = [];
+    return ret;
+  }
+  
+  async vals (sortFunc) {
+    const array = await idbValues();
+    if (sortFunc) return array.sort(sortFunc);
+    return array;
+  }
+  
+  async del (key) {
+    return idbDel(key);
+  }
+}
 
 /*
 Brief: Returns the first block of hex chars from a v4 UUID as a unique string
