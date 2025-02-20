@@ -4,6 +4,7 @@ Brief: Main entry point for the app.
 
 import * as utils from './utils.js';
 
+const idb = new utils.idb();
 const checkImgURL = 'https://img.icons8.com/color/30/approval--v1.png';
 const crossImgURL = 'https://img.icons8.com/emoji/30/cross-mark-emoji.png';
 let myWorker = null;
@@ -45,18 +46,23 @@ function updateViewCount (type, increment=1) {
   cache.setItem(id, viewCount);
 }
 
-async function inbox (dataArray) {
+async function inbox (dataArray, fresh=true) {
   const container = document.querySelector('#inbox section');
   const inboxUnread = document.getElementById('unread');
 
   // Loop over all messages
   for (const el of dataArray) {
+    if (!el) continue
     const dataID = el.id;
     if (messagesReceived.includes(dataID)) continue;
+
     messagesReceived.push(dataID);
+    idb.set(dataID, structuredClone(el)); // Do this before mutating el or el.data
+
     const data = el.data;
     
-    const origin = data.FormID ?? 'NA';
+    const origin = data.FormID ?? 'Undefined';
+    delete data.FormID;
     
     if (origin.startsWith('_view_')) {
       updateViewCount(origin.substring('_view_'.length));
@@ -64,7 +70,7 @@ async function inbox (dataArray) {
     }
     
     const chatID = data.ChatID;
-    if (chatID) delete data.ChatID;
+    delete data.ChatID;
 
     if ('geolocation' in el && ! ('Location' in data)) data.Location = el.geolocation;
 
@@ -128,13 +134,13 @@ async function inbox (dataArray) {
           categoryUnread.toggleAttribute('hidden', true);
         } else {
           /* the element was toggled closed */
-          const rowList = tableBody.getElementsByTagName('tr');
           // Unaccentuate old messages
-          for (let i = 1; i <= rowList.length; i++) {
-            // Looping from bottom [rowList.length - i] to avoid unaccentuating new incoming messages
-            // rowList.length is live, hence not assigned to const
-            rowList[rowList.length - i].classList.remove('table-primary');
-          }
+          // querySelectorAll returns a live nodelist which may change whenever another event handler updates document
+          // Hence using a shallow copy (Array.from) to isolate
+          Array.from(tableBody.querySelectorAll('tr.table-primary'))
+            .forEach((el) => {
+              el.classList.remove('table-primary');
+            });
         }
       });
     }
@@ -165,16 +171,17 @@ async function inbox (dataArray) {
     document.getElementById(category).prepend(row);
 
     // Accentuate row as new
-    row.className = 'table-primary';
+    if (fresh) row.className = 'table-primary';
 
     // Update unread message count
-    if (!row.checkVisibility()) {
+    if (fresh && !row.checkVisibility()) {
       inboxUnread.innerText = parseInt(inboxUnread.innerText) + 1;
       const categoryUnread = document.getElementById(`${category}Unread`);
       categoryUnread.innerText = parseInt(categoryUnread.innerText) + 1;
       categoryUnread.toggleAttribute('hidden', false);
     }
   }
+  idb.flush(); // Store messages to indexedDB, against id
 }
 
 window.reply = async function reply (chatID) {
@@ -226,6 +233,15 @@ window.fetchChatID = async function fetchChatID (botAPIKey) {
 window.sync = function sync () {
   if (myWorker) myWorker.postMessage({ cmd: 'syncNow' });
 };
+
+window.clearInbox = function clearInbox (force = false) {
+  if ( !(force || confirm('Are you sure you want to delete all inboxed messages?')) ) return;
+  idb.clear();
+  document.querySelectorAll('#inbox section details')
+    .forEach((el) => {
+      el.remove();
+    });
+}
 
 function updateSyncStatusBadge () {
   const badge = document.getElementById('serverStatus');
@@ -321,8 +337,6 @@ window.startWorker = function startWorker () {
 
   logThis('Started sync');
   updateSyncStatusBadge();
-
-  renderForms();
 };
 
 window.stopWorker = function stopWorker () {
@@ -347,6 +361,7 @@ window.toggleWorker = function toggleWorker () {
 };
 
 window.signout = function signout () {
+  if (!confirm('Are you sure you want to log out? This will delete all your data from this device.')) return;
   stopWorker();
   OneSignalDeferred.push(async function(OneSignal) {
      await OneSignal.logout();
@@ -354,10 +369,12 @@ window.signout = function signout () {
   localStorage.clear();
   sessionStorage.clear();
   cache = null;
+  clearInbox(true);
   main();
 };
 
 window.signIn = async function signIn (callerForm) {
+  idb.clear(); // Just in case previous logout didnt clear IndexedDB completely
   const data = new FormData(callerForm);
   const appKey = data.get('appKey');
   try {
@@ -481,6 +498,9 @@ function main() {
     OneSignalLogin();
     if (!pageIsRefreshed) spaGoTo('inbox'); // go to inbox on fresh load
     startWorker();
+    renderForms();
+    // Load earlier messages from indexedDB, sorted chronologically
+    idb.vals((el1, el2) => el1.time - el2.time).then((dataArray) => inbox(dataArray, false));
   } else {
     spaShow('login');
   }

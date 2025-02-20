@@ -296,8 +296,9 @@
                 <h3>Inbox</h3>
                 <div class="alert alert-success">
                   <div class="d-inline-flex w-100 justify-content-between">
-                    <p>This is your storageless Inbox. All data is lost once you close or even reload this window.</p>
-                    <button onClick="sync();">Sync Now</button>
+                    <p class="me-auto"><strong>Note:</strong> All data is lost once you logout.</p>
+                    <button type="button" class="btn btn-danger me-2" onClick="clearInbox();">Clear inbox</button>
+                    <button type="button" class="btn btn-primary" onClick="sync();">Sync Now</button>
                   </div>
                 </div>
                 <p class="alert alert-info"><strong>Protip:</strong> To export to <a href="https://www.microsoft.com/en/microsoft-365/excel">MS Excel</a>, copy the table below, followed by <code>Paste Special &gt; Text</code> in Excel. To export to <a href="https://docs.google.com/spreadsheets/create">Google Sheets</a>, use <code>Paste Special &gt; Values only (Ctrl+Shift+V)</code> instead.</p>
