@@ -92,6 +92,7 @@ async function inbox (dataArray, fresh=true) {
       details.append(summary);
       summary.classList.add('d-flex', 'justify-content-between', 'alert', 'alert-warning');
       summary.innerHTML = `<span><strong>FormID:</strong> ${origin}</span>
+      <span class="ms-2 me-auto">[Click to show]</span>
       <span class="badge bg-primary rounded-pill" id="${category}Unread" hidden>0</span>`;
 
       const copyBtn = document.createElement('button');
@@ -132,6 +133,7 @@ async function inbox (dataArray, fresh=true) {
           inboxUnread.innerText = parseInt(inboxUnread.innerText) - parseInt(categoryUnread.innerText);
           categoryUnread.innerText = 0;
           categoryUnread.toggleAttribute('hidden', true);
+          summary.querySelectorAll('span')[1].innerText = '[Click to hide]';
         } else {
           /* the element was toggled closed */
           // Unaccentuate old messages
@@ -139,6 +141,7 @@ async function inbox (dataArray, fresh=true) {
             .forEach((el) => {
               el.classList.remove('table-primary');
             });
+          summary.querySelectorAll('span')[1].innerText = '[Click to show]';
         }
       });
     }
