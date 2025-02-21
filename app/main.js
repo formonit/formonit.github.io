@@ -135,8 +135,6 @@ async function inbox (dataArray, fresh=true) {
         } else {
           /* the element was toggled closed */
           // Unaccentuate old messages
-          // querySelectorAll returns a live nodelist which may change whenever another event handler updates document
-          // Hence using a shallow copy (Array.from) to isolate
           Array.from(tableBody.querySelectorAll('tr.table-primary'))
             .forEach((el) => {
               el.classList.remove('table-primary');
@@ -503,6 +501,7 @@ function main() {
     idb.vals((el1, el2) => el1.time - el2.time).then((dataArray) => inbox(dataArray, false));
   } else {
     spaShow('login');
+    document.querySelector('#login').focus({ preventScroll: true, focusVisible: true });
   }
 };
 

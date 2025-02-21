@@ -20,18 +20,24 @@ export class idb {
   }
   
   #clearStage () {
-    this.#staged = { set: [], del: [] };
+    this.#staged = { set: {}, del: {} };
   }
   
   async set (key, val, flush = false) {
     if (flush) return idbSet(key, val);
-    this.#staged.set.push([key, val]);
+    this.#staged.set[key] = val;
   }
   
+  unstage (key) {
+    delete this.#staged.set[key];
+    delete this.#staged.del[key];
+  }
+  
+  // Commits sets after deletes. A key staged for both set and delete gets updated.
   async flush () {
     const ret = Promise.all([
-      idbSetMany(this.#staged.set),
-      idbDelMany(this.#staged.del)
+      idbDelMany(Object.entries(this.#staged.del)),
+      idbSetMany(Object.entries(this.#staged.set))
     ])
     this.#clearStage();
     return ret;
@@ -45,7 +51,7 @@ export class idb {
   
   async del (key, flush = false) {
     if (flush) return idbDel(key);
-    this.#staged.del.push(key);
+    this.#staged.del[key] = true;
   }
   
   async clear () {
