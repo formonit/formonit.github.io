@@ -2,7 +2,7 @@
 Brief: Helper utilities.
 */
 
-import securelayEndpoint, * as securelay from 'https://cdn.jsdelivr.net/gh/securelay/api@v0.0.4/script.js';
+import securelayEndpoint, * as securelay from 'https://cdn.jsdelivr.net/gh/securelay/api@v0.0.7/script.min.js';
 import {
   set as idbSet,
   setMany as idbSetMany,
