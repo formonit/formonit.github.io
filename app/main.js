@@ -38,12 +38,16 @@ function logThis (report) {
   logs.prepend(row);
 }
 
-function updateViewCount (type, increment=1) {
+async function updateViewCount (type, publicKey) {
   const id = `${type}Views`;
-  let viewCount = parseInt(cache.getItem(id) ?? 0);
-  viewCount += parseInt(increment);
-  document.getElementById(id).innerText = viewCount;
-  cache.setItem(id, viewCount);
+  document.getElementById(id).innerText = '...';
+  const formID = `${type}@formonit`;
+  const url = `https://api.counterapi.dev/v1/${publicKey}/${encodeURIComponent(formID)}/`;
+  const viewCount = await fetch(url)
+    .then((response) => response.json())
+    .then((obj) => obj.count)
+    .catch((err) => {});
+  if (viewCount) document.getElementById(id).innerText = viewCount;
 }
 
 async function inbox (dataArray, fresh=true) {
@@ -63,11 +67,6 @@ async function inbox (dataArray, fresh=true) {
     
     const origin = data.FormID ?? 'Undefined';
     delete data.FormID;
-    
-    if (origin.startsWith('_view_')) {
-      updateViewCount(origin.substring('_view_'.length));
-      continue;
-    }
     
     const chatID = data.ChatID;
     delete data.ChatID;
@@ -291,7 +290,7 @@ function renderForms () {
     linkElement.href = url;
     qrElement.href = "https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=" + url;
     const type = shareableLinks[i].getAttribute('name');
-    updateViewCount(type, 0);
+    updateViewCount(type, formActionURL.split('/').pop());
   }
 };
 
