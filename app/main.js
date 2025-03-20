@@ -191,6 +191,7 @@ window.reply = async function reply (chatID) {
   const query = `?ok=${encodeURIComponent(checkImgURL)}&err=${encodeURIComponent(crossImgURL)}`;
   replyDialog.getElementsByTagName('form')[0].setAttribute('action', `${url}/${chatID}${query}`);
   replyDialog.showModal();
+  replyDialog.querySelector('textarea').focus();
 };
 
 window.loadReply = async function loadReply (callingBtn) {
