@@ -201,7 +201,7 @@ window.loadReply = async function loadReply (callingBtn) {
         if (!response.ok) throw new Error(response.status);
         return response.json();
       })
-      .then((data) => data.data.Message);
+      .then((data) => data.Message);
     callingBtn.previousElementSibling.innerText = reply;
   } catch (err) {
     callingBtn.previousElementSibling.innerText = 'Found none';
